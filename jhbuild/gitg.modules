@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+  <repository name="bintray"      type="tarball" href="https://dl.bintray.com/"/>
+  <repository name="freedesktop"  type="tarball" href="https://gitlab.freedesktop.org/"/>
+  <repository name="github"       type="tarball" href="https://github.com/"/>
+  <repository name="gnome_ftp"    type="tarball" href="https://ftp.fau.de/gnome/sources/"/>
+  <repository name="gnome_gitlab" type="tarball" href="https://gitlab.gnome.org/GNOME/"/>
+  <repository name="gnome_org"    type="tarball" href="https://download.gnome.org/sources/"/>
+  <repository name="gnu"          type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
+  <repository name="libreoffice"  type="tarball" href="https://dev-www.libreoffice.org/src/"/>
+  <repository name="poppler"      type="tarball" href="https://poppler.freedesktop.org/"/>
+  <repository name="sourceforge"  type="tarball" href="https://netcologne.dl.sourceforge.net/project/"/>
+
+  <include href="gtk-osx.modules"/>
+
+  <!--
+          - Dependencies marked with TODO have not been investigated yet.
+            Maybe there are no dependencies or maybe they need to be added.
+  -->
+
+  <!-- GNU Find Utilities https://www.gnu.org/software/findutils/ -->
+  <autotools
+    id="findutils"
+    autogen-sh="configure">
+    <branch
+      module="findutils/findutils-4.7.0.tar.xz"
+      version="4.7.0"
+      hash="sha256:c5fefbdf9858f7e4feb86f036e1247a54c79fc2d8e4b7064d5aaa1f47dfa789a"
+      repo="gnu">
+    </branch>
+  </autotools>
+
+  <!-- Spell checking for GTK https://wiki.gnome.org/Projects/gspell -->
+  <autotools
+    id="gspell"
+    autogen-sh="autoreconf">
+    <branch
+      module="gspell/1.9/gspell-1.9.1.tar.xz"
+      version="1.9.1"
+      hash="sha256:dcbb769dfdde8e3c0a8ed3102ce7e661abbf7ddf85df08b29915e92cd723abdd"
+      repo="gnome_ftp">
+      <patch
+        file="gspell_makefile_objc.patch"
+        strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="enchant"/>
+      <dep package="glib"/>
+      <dep package="gtk+-3.0"/>
+      <dep package="iso-codes"/>
+      <dep package="vala"/>
+    </dependencies>
+  </autotools>
+
+  <!-- GTK Mac Bundler https://gitlab.gnome.org/GNOME/gtk-mac-bundler
+
+       This is a hackish way of installing GTK Mac Bundler with JHBuild.
+       The patch supplies a mocked configure script that's only interested in
+       taking the prefix and patching the Makefile accordingly. Skipping
+       installation means that JHBuild will (re-)install this everytime
+       it gets pulled in.
+   -->
+  <autotools
+    id="gtkmacbundler"
+    autogen-sh="configure"
+    supports-non-srcdir-builds="no"
+    makeargs="&amp;&amp; make install"
+    skip-install="yes">
+    <branch
+      module="gtk-mac-bundler/-/archive/3770bb6c27a913dc39dbcc98fe175a53df92700c/gtk-mac-bundler-3770bb6c27a913dc39dbcc98fe175a53df92700c.tar.bz2"
+      version="3770bb6c"
+      hash="sha256:79703fbcb7ffcad3617316d41fa6169e9f3bced040b2a231fd0d158e9f7edfde"
+      repo="gnome_gitlab"
+      checkoutdir="gtk-mac-bundler_3770bb6c"
+      rename-tarball="gtk-mac-bundler_3770bb6c.tar.bz2">
+      <patch
+        file="gtk-mac-bundler_configure.patch"
+        strip="1"/>
+      <patch
+        file="gtk-mac-bundler_encoding_arg.patch"
+        strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools
+    id="libssh2"
+    autogen-sh="configure">
+    <branch
+      module="libssh2/libssh2/releases/download/libssh2-1.9.0/libssh2-1.9.0.tar.gz"
+      version="1.9.0"
+      hash="sha256:d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd"
+      repo="github">
+    </branch>
+  </autotools>
+
+  <cmake
+    id="libgit2"
+    cmakeargs="-DTHREADSAFE=ON">
+    <branch
+      module="libgit2/libgit2/releases/download/v1.1.0/libgit2-1.1.0.tar.gz"
+      version="1.1.0"
+      hash="sha256:ad73f845965cfd528e70f654e428073121a3fa0dc23caac81a1b1300277d4dba"
+      repo="github">
+    </branch>
+    <dependencies>
+      <dep package="libssh2"/>
+    </dependencies>
+  </cmake>
+
+  <autotools
+    id="libgee">
+    <branch
+      module="libgee/0.20/libgee-0.20.4.tar.xz"
+      version="0.20.4"
+      hash="sha256:524c1bf390f9cdda4fbd9a47b269980dc64ab5280f0801b53bc69d782c72de0e"
+      repo="gnome_org">
+    </branch>
+  </autotools>
+
+  <meson
+    id="json-glib">
+    <branch
+      module="json-glib/1.6/json-glib-1.6.2.tar.xz"
+      version="1.6.2"
+      hash="sha256:a33d66c6d038bda46b910c6c6d59c4e15db014e363dc997a0414c2e07d134f24"
+      repo="gnome_org">
+    </branch>
+  </meson>
+
+  <meson
+    id="gsettings-desktop-schemas">
+    <branch
+      module="gsettings-desktop-schemas/3.38/gsettings-desktop-schemas-3.38.0.tar.xz"
+      version="3.38.0"
+      hash="sha256:5704c8266004b296036671f223c705dc046aa694a1b1abb87c67e7d2747a8c67"
+      repo="gnome_org">
+    </branch>
+  </meson>
+
+  <meson
+    id="libdazzle">
+    <branch
+      module="libdazzle/3.40/libdazzle-3.40.0.tar.xz"
+      version="3.40.0"
+      hash="sha256:dba99a7e65fa6662c012b306e5d0f99ff3b466a46059ea7aa0104aaf65ce4ba5"
+      repo="gnome_org">
+    </branch>
+    <dependencies>
+      <dep package="vala"/>
+    </dependencies>
+  </meson>
+
+  <meson
+    id="libgit2-glib">
+    <branch
+      module="libgit2-glib/0.99/libgit2-glib-0.99.0.1.tar.xz"
+      version="0.99.0.1"
+      hash="sha256:e05a75c444d9c8d5991afc4a5a64cd97d731ce21aeb7c1c651ade1a3b465b9de"
+      repo="gnome_org">
+    </branch>
+    <dependencies>
+      <dep package="libssh2"/>
+      <dep package="libgit2"/>
+    </dependencies>
+  </meson>
+
+  <meson
+    id="libpeas">
+    <branch
+      module="libpeas/1.28/libpeas-1.28.0.tar.xz"
+      version="1.28.0"
+      hash="sha256:42d91993b46ed50f16add6d9577ecc22beb8e2dffa7101e2232c2b63733b8b15"
+      repo="gnome_org">
+    </branch>
+  </meson>
+
+  <meson
+    id="gitg">
+    <branch
+      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
+      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
+      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
+      repo="gnome_gitlab">
+      <patch
+        file="gitg_disable_libgit2_thread_test.patch"
+        strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="libdazzle"/>
+      <dep package="libgit2-glib"/>
+      <dep package="libgit2"/>
+      <dep package="gsettings-desktop-schemas"/>
+      <dep package="libgee"/>
+      <dep package="json-glib"/>
+      <dep package="gtk+-3.0"/>
+      <dep package="vala"/>
+      <dep package="adwaita-icon-theme"/>
+      <dep package="gtksourceview3"/>
+      <dep package="libpeas"/>
+      <dep package="libsecret"/>
+      <dep package="libsoup"/>
+      <dep package="pkg-config"/>
+      <dep package="gobject-introspection"/>
+      <dep package="gspell"/>
+      <dep package="libsecret"/>
+      <dep package="shared-mime-info"/>
+    </dependencies>
+  </meson>
+
+  <!-- Rust https://www.rust-lang.org
+       Rust has a custom setup routine (rustup) which is wrapped into
+       a cmake file introduced by that patch below.
+  -->
+  <cmake id="rust"
+         cmakeargs="-DVERSION=1.48.0"
+         supports-non-srcdir-builds="no"
+         use-ninja="no">
+    <branch module="rust-lang/rustup/archive/1.22.1.tar.gz"
+            version="1.22.1"
+            hash="sha256:ad46cc624f318a9493aa62fc9612a450564fe20ba93c689e0ad856bff3c64c5b"
+            repo="github"
+            checkoutdir="rustup-1.22.1"
+            rename-tarball="rustup-1.22.1.tar.gz">
+      <patch file="rust_cmake_install.patch"
+             strip="1"/>
+    </branch>
+  </cmake>
+
+</moduleset>

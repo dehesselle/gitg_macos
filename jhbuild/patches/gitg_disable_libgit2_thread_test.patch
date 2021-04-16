@@ -1,0 +1,19 @@
+--- a/meson.build	2021-04-01 21:27:00.000000000 +0200
++++ b/meson.build	2021-04-15 01:24:13.000000000 +0200
+@@ -155,11 +155,11 @@
+   };
+ '''
+
+-res = cc.run(ggit_threads, dependencies: libgit2_glib_dep)
+-assert(
+-  res.compiled() and (res.returncode() == 0),
+-  'please recompile a threadsafe version of libgit2 (-DTHREADSAFE:BOOL=ON)',
+-)
++#res = cc.run(ggit_threads, dependencies: libgit2_glib_dep)
++#assert(
++#  res.compiled() and (res.returncode() == 0),
++#  'please recompile a threadsafe version of libgit2 (-DTHREADSAFE:BOOL=ON)',
++#)
+
+ # gtk required version is set to 3.20, so this will be always true
+ gtk_shortcuts_window = gtk_dep.version().version_compare('>= 3.19')
