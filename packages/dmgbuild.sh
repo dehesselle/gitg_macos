@@ -1,14 +1,19 @@
 # SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
-
-### settings ###################################################################
-
-# shellcheck shell=bash # no shebang as this file is intended to be sourced
 
 ### description ################################################################
 
 # This file contains everything related to setup dmgbuild, a tool to create
 # disk images.
+
+### shellcheck #################################################################
+
+# shellcheck shell=bash # no shebang as this file is intended to be sourced
+
+### includes ###################################################################
+
+# Nothing here.
 
 ### variables ##################################################################
 
@@ -16,24 +21,24 @@
 # https://github.com/al45tair/dmgbuild
 # including dependencies:
 # - biplist: binary plist parser/generator
-# - pyobjc-*: framework wrappers; pinned to 6.2.2 as 7.0 includes fixes for
-#   Big Sur (dyld cache) that break on Catalina
-DMGBUILD_PIP="\
+# - pyobjc-*: framework wrappers
+DMGBUILD_REQUIREMENTS="\
   biplist==1.0.3\
-  pyobjc-core==6.2.2\
-  pyobjc-framework-Cocoa==6.2.2\
-  pyobjc-framework-Quartz==6.2.2\
+  pyobjc-core==7.2\
+  pyobjc-framework-Cocoa==7.2\
+  pyobjc-framework-Quartz==7.2\
   dmgbuild==1.4.2\
 "
 
-DMGBUILD_CONFIG="$SRC_DIR"/gitg_dmg.py
+DMGBUILD_CONFIG="$SRC_DIR"/inkscape_dmg.py
 
 ### functions ##################################################################
 
 function dmgbuild_install
 {
   # shellcheck disable=SC2086 # we need word splitting here
-  jhbuild run pip3 install $DMGBUILD_PIP
+  jhbuild run \
+    "$JHBUILD_PYTHON_PIP" install --prefix="$VER_DIR" $DMGBUILD_REQUIREMENTS
 
   # dmgbuild has issues with detaching, workaround is to increase max retries
   sed -i '' '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$BIN_DIR"/dmgbuild
@@ -69,3 +74,7 @@ function dmgbuild_run
   dmgbuild -s "$DMGBUILD_CONFIG" "$(basename -s .app "$INK_APP_DIR")" "$TMP_DIR"/"$(basename "$dmg_file")"
   mv "$TMP_DIR"/"$(basename "$dmg_file")" "$dmg_file"
 }
+
+### main #######################################################################
+
+# Nothing here.
