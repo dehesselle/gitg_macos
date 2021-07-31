@@ -6,7 +6,7 @@
 
 ### description ################################################################
 
-# Install tools that are not direct dependencies but required for packaging.
+# Build gitg.
 
 ### shellcheck #################################################################
 
@@ -29,19 +29,4 @@ done
 
 ### main #######################################################################
 
-error_trace_enable
-
-#---------------------------------------------------- install disk image creator
-
-dmgbuild_install
-
-#-------------------------------------------- install application bundle creator
-
-jhbuild build gtkmacbundler
-
-#---------------------------------------------------- install GNU Find Utilities
-
-# We need this because the 'find' provided by macOS does not see the files
-# in the lower (read-only) layer when we union-mount a ramdisk ontop of it.
-
-jhbuild build findutils
+jhbuild build gitg

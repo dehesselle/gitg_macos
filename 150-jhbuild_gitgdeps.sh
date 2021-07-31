@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
+#
 # SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 ### description ################################################################
 
-# Install gitg. This will pull in all its dependencies as well.
+# Build all gitg dependencies.
+
+### shellcheck #################################################################
+
+# Nothing here.
 
 ### includes ###################################################################
 
@@ -13,10 +19,14 @@ for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
   source "$script";
 done
 
-### settings ###################################################################
+### variables ##################################################################
+
+# Nothing here.
+
+### functions ##################################################################
 
 # Nothing here.
 
 ### main #######################################################################
 
-jhbuild build gitg
+jhbuild build meta-gitg-dependencies

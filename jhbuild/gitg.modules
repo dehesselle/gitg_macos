@@ -179,22 +179,7 @@
     </branch>
   </meson>
 
-  <meson
-    id="gitg">
-    <branch
-      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
-      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
-      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
-      repo="gnome_gitlab">
-      <patch
-        file="gitg_disable_libgit2_thread_test.patch"
-        strip="1">
-      </patch>
-      <patch
-        file="gitg_set_bundle_env.patch"
-        strip="1">
-      </patch>
-    </branch>
+  <metamodule id="meta-gitg-dependencies">
     <dependencies>
       <dep package="libdazzle"/>
       <dep package="libgit2-glib"/>
@@ -214,6 +199,27 @@
       <dep package="gspell"/>
       <dep package="libsecret"/>
       <dep package="shared-mime-info"/>
+    </dependencies>
+  </metamodule>
+
+  <meson
+    id="gitg">
+    <branch
+      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
+      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
+      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
+      repo="gnome_gitlab">
+      <patch
+        file="gitg_disable_libgit2_thread_test.patch"
+        strip="1">
+      </patch>
+      <patch
+        file="gitg_set_bundle_env.patch"
+        strip="1">
+      </patch>
+    </branch>
+    <dependencies>
+      <dep package="meta-gitg-dependencies"/>
     </dependencies>
   </meson>
 
