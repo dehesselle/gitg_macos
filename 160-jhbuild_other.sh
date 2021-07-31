@@ -45,3 +45,9 @@ jhbuild build gtkmacbundler
 # in the lower (read-only) layer when we union-mount a ramdisk ontop of it.
 
 jhbuild build findutils
+
+#----------------------------------------------------------- install ImageMagick
+
+# We use the 'convert' program later.
+
+jhbuild build imagemagick

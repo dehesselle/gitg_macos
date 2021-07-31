@@ -24,13 +24,15 @@
 # - pyobjc-*: framework wrappers
 DMGBUILD_REQUIREMENTS="\
   biplist==1.0.3\
-  pyobjc-core==7.2\
-  pyobjc-framework-Cocoa==7.2\
-  pyobjc-framework-Quartz==7.2\
-  dmgbuild==1.4.2\
+  dmgbuild==1.5.2\
+  ds-store==1.3.0\
+  mac-alias==2.2.0\
+  pyobjc-core==7.3\
+  pyobjc-framework-Cocoa==7.3\
+  pyobjc-framework-Quartz==7.3\
 "
 
-DMGBUILD_CONFIG="$SRC_DIR"/inkscape_dmg.py
+DMGBUILD_CONFIG="$SRC_DIR"/gitg_dmg.py
 
 ### functions ##################################################################
 
@@ -53,7 +55,7 @@ function dmgbuild_run
   cp "$SELF_DIR"/"$(basename "$DMGBUILD_CONFIG")" "$SRC_DIR"
 
   # set application
-  sed -i '' "s/PLACEHOLDERAPPLICATION/$(sed_escape_str "$INK_APP_DIR")/" "$DMGBUILD_CONFIG"
+  sed -i '' "s/PLACEHOLDERAPPLICATION/$(sed_escape_str "$GITG_APP_DIR")/" "$DMGBUILD_CONFIG"
 
   # set disk image icon (if it exists)
   local icon
@@ -71,7 +73,7 @@ function dmgbuild_run
 
   # Create disk image in temporary location and move to target location
   # afterwards. This way we can run multiple times without requiring cleanup.
-  dmgbuild -s "$DMGBUILD_CONFIG" "$(basename -s .app "$INK_APP_DIR")" "$TMP_DIR"/"$(basename "$dmg_file")"
+  dmgbuild -s "$DMGBUILD_CONFIG" "$(basename -s .app "$GITG_APP_DIR")" "$TMP_DIR"/"$(basename "$dmg_file")"
   mv "$TMP_DIR"/"$(basename "$dmg_file")" "$dmg_file"
 }
 

@@ -48,7 +48,7 @@
        this bundle file is located. The application name and bundle
        identifier are taken from the plist file.
   -->
-  <plist>${project}/gitg.plist</plist>
+  <plist>${prefix}/tmp/Info.plist</plist>
 
   <main-binary>${prefix}/bin/gitg</main-binary>
 
@@ -135,7 +135,6 @@
   <data>
     ${prefix}/share/icons
   </data>
-
   <data>
     ${prefix}/share/gitg
   </data>
@@ -159,9 +158,10 @@
   <!-- Copy icons. Note that the .icns file is an Apple format which
        contains up to 4 sizes of icon. You can use
        /Developer/Applications/Utilities/Icon Composer.app to import
-       artwork and create the file. >
+       artwork and create the file.
+    -->
   <data dest="${bundle}/Contents/Resources">
-    ${project}/Giggle.icns
-  </data -->
+    ${prefix}/tmp/Gitg.icns
+  </data>
 
   </app-bundle>
