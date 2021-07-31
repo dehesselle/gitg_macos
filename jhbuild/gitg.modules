@@ -43,7 +43,8 @@
       repo="gnome_ftp">
       <patch
         file="gspell_makefile_objc.patch"
-        strip="1"/>
+        strip="1">
+      </patch>
     </branch>
     <dependencies>
       <dep package="enchant"/>
@@ -77,10 +78,12 @@
       rename-tarball="gtk-mac-bundler_3770bb6c.tar.bz2">
       <patch
         file="gtk-mac-bundler_configure.patch"
-        strip="1"/>
+        strip="1">
+      </patch>
       <patch
         file="gtk-mac-bundler_encoding_arg.patch"
-        strip="1"/>
+        strip="1">
+      </patch>
     </branch>
   </autotools>
 
@@ -185,7 +188,12 @@
       repo="gnome_gitlab">
       <patch
         file="gitg_disable_libgit2_thread_test.patch"
-        strip="1"/>
+        strip="1">
+      </patch>
+      <patch
+        file="gitg_set_bundle_env.patch"
+        strip="1">
+      </patch>
     </branch>
     <dependencies>
       <dep package="libdazzle"/>
@@ -224,7 +232,8 @@
             checkoutdir="rustup-1.22.1"
             rename-tarball="rustup-1.22.1.tar.gz">
       <patch file="rust_cmake_install.patch"
-             strip="1"/>
+             strip="1">
+      </patch>
     </branch>
   </cmake>
 

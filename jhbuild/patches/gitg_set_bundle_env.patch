@@ -1,0 +1,24 @@
+diff --git a/gitg/gitg.vala b/gitg/gitg.vala
+index 14f09d73..aec0c602 100644
+--- a/gitg/gitg.vala
++++ b/gitg/gitg.vala
+@@ -26,6 +26,14 @@ public class Main
+ {
+ 	public static int main(string[] args)
+ 	{
++		string self_dir = GLib.Path.get_dirname(args[0]);
++		Environment.set_variable("XDG_DATA_DIRS", self_dir.concat("/../Resources/share"), true);
++		Environment.set_variable("GTK_EXE_PREFIX", self_dir.concat("/../Resources"), true);
++		Environment.set_variable("GTK_DATA_PREFIX", self_dir.concat("/../Resources"), true);
++		Environment.set_variable("GDK_PIXBUF_MODULE_FILE", self_dir.concat("/../Resources/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"), true);
++		Environment.set_variable("GIO_MODULE_DIR", self_dir.concat("/../Resources/lib/gio/modules"), true);
++		Environment.set_variable("GI_TYPELIB_PATH", self_dir.concat("/../Resources/lib/girepository-1.0"), true);
++
+ 		Gtk.disable_setlocale();
+ 
+ 		Intl.setlocale(LocaleCategory.ALL, "");
+@@ -46,3 +54,4 @@ public class Main
+ }
+ 
+ // ex:set ts=4 noet
++
