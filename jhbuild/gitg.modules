@@ -225,6 +225,15 @@
 
   <meson
     id="gitg">
+    <!--
+      We are using master instead gnome-3-32 branch as we're already using
+      gtksourceview4. That gives us a 3.30+ version number though
+      (instead 3.32+).
+
+      module="gitg/-/archive/33bb5d2d896fcf2fc9a2ed50b236b727c5364895/gitg-33bb5d2d896fcf2fc9a2ed50b236b727c5364895.tar.gz"
+      version="33bb5d2d896fcf2fc9a2ed50b236b727c5364895"
+      hash="sha256:94940d9f20f8531798aa52aeb424f0d1e8976b918c4efbe312921abdf677bb54"
+    -->
     <branch
       module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
       version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
@@ -233,6 +242,11 @@
       <patch
         file="gitg_disable_libgit2_thread_test.patch"
         strip="1">
+        <!--
+          FIXME:
+          We have compiled this with the required THREADSAFE:ON flag but it
+          fails to detect that. Disabling the check for now.
+        -->
       </patch>
       <patch
         file="gitg_set_bundle_env.patch"
