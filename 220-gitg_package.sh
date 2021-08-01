@@ -82,7 +82,7 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
 
 #------------------------------------------------------- add GitHub CI variables
 
-if $CI; then
+if $CI_GITHUB; then
   for var in REPOSITORY REF RUN_NUMBER SHA; do
     # use awk to create camel case strings (e.g. RUN_NUMBER to RunNumber)
     /usr/libexec/PlistBuddy -c "Add CI$(\

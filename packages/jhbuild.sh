@@ -147,7 +147,8 @@ function jhbuild_configure
     # user home directory
     echo "os.environ[\"HOME\"] = \"$HOME\""
 
-    # less noise on the terminal if not CI
+    # less noise on the terminal if not running in GitHub or GitLab CI
+    # (they both set 'CI' variable)
     if ! $CI; then
       echo "quiet_mode = True"
       echo "progress_bar = True"

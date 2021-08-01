@@ -53,14 +53,14 @@ if [ -z "$SDKROOT" ]; then
 fi
 export SDKROOT
 
-#--------------------------------------------------------------------- detect CI
+#-------------------------------------------------------------- detect GitHub CI
 
 # Make sure we can use this variable as a boolean.
 
-if [ -z "$CI" ]; then
-  CI=false
+if [ -z "$GITHUB_WORKFLOW" ]; then
+  CI_GITHUB=false
 else
-  CI=true
+  CI_GITHUB=true
 fi
 
 #------------------------------------------------------------- directories: work
@@ -107,7 +107,16 @@ export PIPENV_CACHE_DIR=$XDG_CACHE_HOME/pipenv # instead ~/Library/Caches/pipenv
 
 #--------------------------------------------------------- directories: artifact
 
-ARTIFACT_DIR=$VER_DIR
+
+# In CI mode, the artifacts are placed into the respective project repositories
+# so they can be picked up from there. In non-CI mode the artifacts are
+# placed in VER_DIR.
+
+if $CI_GITHUB; then
+  ARTIFACT_DIR=$GITHUB_WORKSPACE
+else
+  ARTIFACT_DIR=$VER_DIR
+fi
 
 #---------------------------------------------------------------------- set path
 
