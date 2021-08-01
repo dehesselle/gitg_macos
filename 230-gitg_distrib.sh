@@ -27,12 +27,12 @@ error_trace_enable
 # Create background for development snapshots. This is not meant for
 # official releases, those will be repackaged eventually (they also need
 # to be signed and notarized).
-convert -size 560x400 xc:transparent \
+convert -size 460x400 xc:transparent \
   -font Andale-Mono -pointsize 64 -fill black \
   -draw "text 20,60 'Gitg'" \
-  -draw "text 20,120 '$(gitg_get_version)'" \
-  -draw "text 20,180 'release'" \
-  -draw "text 20,240 '$GITG_RELEASE'" \
+  -font Andale-Mono -pointsize 30 -fill black \
+  -draw "text 20,120 '$(gitg_get_version_from_git)'" \
+  -draw "text 20,160 'release $GITG_RELEASE'" \
   "$SRC_DIR"/gitg_dmg.png
 
 # Create the disk image.

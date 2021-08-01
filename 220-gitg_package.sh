@@ -29,13 +29,13 @@ error_trace_enable
 
 ( # run gtk-mac-bundler
 
-  cp $SRC_DIR/gitg-$(gitg_get_version)/osx/data/Gitg.icns  $TMP_DIR
-  cp $SRC_DIR/gitg-$(gitg_get_version)/osx/data/Info.plist $TMP_DIR
+  cp "$SRC_DIR"/gitg-"$(gitg_get_version)"/osx/data/Gitg.icns  "$TMP_DIR"
+  cp "$SRC_DIR"/gitg-"$(gitg_get_version)"/osx/data/Info.plist "$TMP_DIR"
   cp "$SELF_DIR"/gitg.bundle "$TMP_DIR"
 
   cd "$WRK_DIR" || exit 1
   export ARTIFACT_DIR=$ARTIFACT_DIR   # referenced in gitg.bundle
-  jhbuild run gtk-mac-bundler $TMP_DIR/gitg.bundle
+  jhbuild run gtk-mac-bundler "$TMP_DIR"/gitg.bundle
 )
 
 lib_change_siblings "$GITG_APP_LIB_DIR"
@@ -50,9 +50,14 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
   "$GITG_PLIST"
 
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleShortVersionString '$(gitg_get_version_from_git)'" "$GITG_PLIST"
+  "Add XXGitDescribe string '$(gitg_get_version_from_git)'" "$GITG_PLIST"
+# No alphanumeric characters allowed, so we turn the version number into
+# major.minor.patch.number_of_commits_since_tag
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleVersion '$(gitg_get_version_from_git).$GITG_RELEASE'" "$GITG_PLIST"
+  "Set CFBundleShortVersionString \"$(gitg_get_version_from_git |
+  tr '-' '.' | cut -c 2- | cut -d'.' -f1-4)\"" "$GITG_PLIST"
+/usr/libexec/PlistBuddy -c \
+  "Set CFBundleVersion '$GITG_RELEASE'" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c \
   "Set LSMinimumSystemVersion '$SYS_SDK_VER'" "$GITG_PLIST"
 
@@ -84,12 +89,3 @@ if $CI; then
     ) string $(eval echo \$GITHUB_$var)" "$GITG_APP_CON_DIR"/Info.plist
   done
 fi
-
-exit 0
-
-# patch library link paths for lib2geom
-lib_change_path \
-  @executable_path/../Resources/lib/libgit2-glib-1.0.0.dylib \
-  "$GITG_APP_EXE_DIR"/gitg
-
-exit 0

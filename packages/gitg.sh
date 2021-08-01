@@ -12,7 +12,7 @@
 
 ### variables ##################################################################
 
-GITG_RELEASE=r2
+GITG_RELEASE=2
 GITG_REPO_URL=https://gitlab.gnome.org/GNOME/gitg.git
 
 #------------------------------------------- application bundle directory layout
