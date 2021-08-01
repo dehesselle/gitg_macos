@@ -129,9 +129,8 @@ jobs:
     - name: create gitg.app
       run: ./220-gitg_package.sh
 
-    # TODO: this is not ready yet
-    #- name: create gitg.dmg
-    #  run: ./230-gitg_distrib.sh
+    - name: create gitg.dmg
+      run: ./230-gitg_distrib.sh
 
     ### undo previous changes to /usr/local ####################################
 
@@ -153,12 +152,11 @@ jobs:
         name: gitg_build_toolset.sha256
         path: ${{ github.workspace }}/toolset_v${{ steps.toolset.outputs.version }}.dmg.sha256
 
-    # TODO: see above
-    #- name: upload gitg disk image
-    #  uses: actions/upload-artifact@v2
-    #  with:
-    #    name: gitg_dmg
-    #    path: ${{ github.workspace }}/gitg.dmg
+    - name: upload gitg disk image
+      uses: actions/upload-artifact@v2
+      with:
+        name: gitg_dmg
+        path: ${{ github.workspace }}/gitg.dmg
 
 ### release ####################################################################
 
