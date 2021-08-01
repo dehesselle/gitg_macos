@@ -56,7 +56,7 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
 /usr/libexec/PlistBuddy -c \
   "Set LSMinimumSystemVersion '$SYS_SDK_VER'" "$GITG_PLIST"
 
-/usr/libexec/PlistBuddy -c "Delete CFBundleDisplayName" "$GITG_PLIST"
+/usr/libexec/PlistBuddy -c "Set CFBundleDisplayName 'Gitg'" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c "Set CFBundleName 'Gitg'" "$GITG_PLIST"
 
 /usr/libexec/PlistBuddy -c "Add LSApplicationCategoryType string \
