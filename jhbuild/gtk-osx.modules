@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
   <repository type="tarball" name="ftp.gnome.org" default="yes"
-              href="https://ftp.fau.de/gnome/sources/"/>
+              href="http://ftp.gnome.org/pub/GNOME/sources/"/>
   <repository type="tarball" name="sourceforge"
               href="http://downloads.sourceforge.net/sourceforge/"/>
   <repository type="tarball" name="cairographics"
@@ -14,6 +14,8 @@
               href="ftp://ftp.freedesktop.org/pub/"/>
   <repository type="tarball" name="fontconfig"
 	      href="http://www.freedesktop.org/software/fontconfig/release/"/>
+  <repository type="tarball" name="hicolor"
+              href="https://icon-theme.freedesktop.org/releases/"/>
   <repository type="git" name="github" href="git://github.com/"/>
   <repository type="tarball" name="github-tarball" href="https://github.com/"/>
   <repository type="system" name="system"/>
@@ -36,7 +38,6 @@
   -->
 
   <include href="gtk-osx-bootstrap.modules"/>
-  <include href="gtk-osx-gtkmm.modules"/>
   <include href="gtk-osx-network.modules"/>
   <include href="gtk-osx-python.modules"/>
   <include href="gtk-osx-random.modules"/>
@@ -46,7 +47,7 @@
     <branch repo="system"/>
   </systemmodule>
 
-   <metamodule id="meta-gtk-osx-gtk3">
+  <metamodule id="meta-gtk-osx-gtk3">
     <dependencies>
       <dep package="gtk+-3.0"/>
       <dep package="gtk-mac-integration"/>
@@ -69,7 +70,7 @@
             hash="sha256:67734f584f3a05a2872f57e9a8db38f3b06c7087fb531c5a839d9171968103ea">
     </branch>
     <dependencies>
-        <dep package="libffi"/>
+      <dep package="libffi"/>
     </dependencies>
   </meson>
 
@@ -108,7 +109,7 @@
   </cmake>
 
   <autotools id="fontconfig" autogen-sh="configure"
-             autogenargs="--disable-docs --with-default-fonts=/System/Library/Fonts --with-add-fonts=/Library/Fonts --with-cache-dir=home">
+             autogenargs="--disable-docs --with-default-fonts=/System/Library/Fonts --with-add-fonts=/Library/Fonts">
     <branch repo="fontconfig" version="2.13.1"
             module="fontconfig-2.13.1.tar.bz2"
             hash="sha256:f655dd2a986d7aa97e052261b36aa67b0a64989496361eca8d604e6414006741"/>
@@ -137,7 +138,7 @@
             repo="cairographics"
             hash="sha256:5e7b29b3f113ef870d1e3ecf8adf21f923396401604bda16d44be45e66052331">
       <patch file="cairo-freetype-font-variations.patch" strip="1"/>
-      <patch file="cairo-image-refcount.patch" strip="1"/>
+      <patch file="Cairo-quartz-surface-create-internal.patch" strip="1"/>
       <patch file="cairo_pdf_add_missing_flush.patch" strip="1"/>
     </branch>
     <dependencies>
@@ -165,7 +166,8 @@
 
   <meson id="harfbuzz" mesonargs="-Dcoretext=enabled -Ddocs=disabled -Dbenchmark=disabled">
     <branch repo="github-tarball" version="2.8.0"
-            module="harfbuzz/harfbuzz/releases/download/2.8.0/harfbuzz-2.8.0.tar.xz">
+            module="harfbuzz/harfbuzz/releases/download/2.8.0/harfbuzz-2.8.0.tar.xz" 
+>
     </branch>
     <dependencies>
       <dep package="gobject-introspection"/>
@@ -192,14 +194,14 @@
       <dep package="cairo"/>
       <dep package="harfbuzz"/>
       <dep package="fribidi"/>
-     </dependencies>
+    </dependencies>
     <after>
       <dep package="gobject-introspection"/>
       <dep package="meta-gtk-osx-bootstrap"/>
     </after>
   </meson>
-
- <meson id="atk">
+  
+  <meson id="atk">
     <branch module="atk/2.36/atk-2.36.0.tar.xz" version="2.36.0"
             hash="sha256:fb76247e369402be23f1f5c65d38a9639c1164d934e40f6a9cf3c9e96b652788"/>
     <dependencies>
@@ -222,6 +224,11 @@
     </after>
   </meson>
 
+  <autotools id="hicolor-icon-theme">
+    <branch module="hicolor-icon-theme-0.17.tar.xz" version="0.17"
+            repo="hicolor"/>
+  </autotools>
+
   <autotools id="xorg-util-macros">
     <branch repo="freedesktop" version="1.19.2"
             module="xorg/individual/util/util-macros-1.19.2.tar.bz2"
@@ -240,11 +247,8 @@
   <!-- gtk3 is in maintenance mode with 3.24 the final release series. -->
   <meson id="gtk+-3.0"
              mesonargs="-Dquartz-backend=true -Dx11-backend=false -Dmedia=none">
-    <branch module="gtk+/3.24/gtk+-3.24.28.tar.xz" version="3.24.28"
-            hash="sha256:b04e09763367f1ce932cd2ee3a359d4de150e1c38e7bef7d29aa72557a6b47c6">
-      <!-- Patches provide compatibility with OS X El Capitan 10.11 -->
-      <patch file="gtk_fix_darwin_version_directives.patch" strip="1"/>
-      <patch file="gtk_cups_elcapitan_compatibility.patch" strip="1"/>
+    <branch module="gtk+/3.24/gtk+-3.24.30.tar.xz" version="3.24.30"
+            hash="sha256:ba75bfff320ad1f4cfbee92ba813ec336322cc3c660d406aad014b07087a3ba9">
     </branch>
     <dependencies>
       <dep package="glib"/>
@@ -253,6 +257,7 @@
       <dep package="gdk-pixbuf"/>
       <dep package="gobject-introspection"/>
       <dep package="libepoxy"/>
+      <dep package="hicolor-icon-theme"/>
     </dependencies>
     <after>
       <dep package="meta-gtk-osx-bootstrap"/>
@@ -261,9 +266,9 @@
 
   <autotools id="gtk-mac-integration" autogen-sh="configure"
              autogenargs="--disable-python">
-    <branch module="gtk-mac-integration/3.0/gtk-mac-integration-3.0.0.tar.xz"
-            version="3.0.0"
-            hash="sha256:af88bb3a284e24c550e15290e07e562fcd2a038ebb0fcc863dd069d3738952ae"
+    <branch module="gtk-mac-integration/3.0/gtk-mac-integration-3.0.1.tar.xz"
+            version="3.0.1"
+            hash="sha256:f19e35bc4534963127bbe629b9b3ccb9677ef012fc7f8e97fd5e890873ceb22d"
             >
     </branch>
     <dependencies>
@@ -288,7 +293,7 @@
       <dep package="rust"/>
     </dependencies>
     <after>
-<!-- Circular dependency if we depend on meta-gtk-osx or meta-gtk-osx-gtk3 -->
+      <!-- Circular dependency if we depend on meta-gtk-osx or meta-gtk-osx-gtk3 -->
       <dep package="gtk+-3.0"/>
     </after>
   </autotools>
