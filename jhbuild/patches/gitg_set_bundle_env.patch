@@ -1,8 +1,17 @@
 diff --git a/gitg/gitg.vala b/gitg/gitg.vala
-index 14f09d73..aec0c602 100644
+index 14f09d73..9b8f6382 100644
 --- a/gitg/gitg.vala
 +++ b/gitg/gitg.vala
-@@ -26,6 +26,14 @@ public class Main
+@@ -17,6 +17,8 @@
+  * along with gitg. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++extern int is_dark_mode_enabled();
++
+ namespace Gitg
+ {
+ 
+@@ -26,6 +28,19 @@ public class Main
  {
  	public static int main(string[] args)
  	{
@@ -14,11 +23,53 @@ index 14f09d73..aec0c602 100644
 +		Environment.set_variable("GIO_MODULE_DIR", self_dir.concat("/../Resources/lib/gio/modules"), true);
 +		Environment.set_variable("GI_TYPELIB_PATH", self_dir.concat("/../Resources/lib/girepository-1.0"), true);
 +
++		if (is_dark_mode_enabled() == 1)
++		{
++			Environment.set_variable("GTK_THEME", "Adwaita:dark", false);
++		}
++
  		Gtk.disable_setlocale();
  
  		Intl.setlocale(LocaleCategory.ALL, "");
-@@ -46,3 +54,4 @@ public class Main
- }
- 
- // ex:set ts=4 noet
+diff --git a/gitg/is_dark_mode_enabled.c b/gitg/is_dark_mode_enabled.c
+new file mode 100644
+index 00000000..9dd338bc
+--- /dev/null
++++ b/gitg/is_dark_mode_enabled.c
+@@ -0,0 +1,24 @@
++#include <CoreFoundation/CoreFoundation.h>
 +
++extern int is_dark_mode_enabled(void);
++
++int is_dark_mode_enabled() 
++{
++	CFPropertyListRef pref = CFPreferencesCopyValue(
++		CFSTR("AppleInterfaceStyle"),
++		kCFPreferencesAnyApplication,
++		kCFPreferencesCurrentUser,
++		kCFPreferencesAnyHost
++	);
++
++	if (pref)
++	{
++		if (CFGetTypeID(pref) == CFStringGetTypeID())
++			if (CFStringCompare((CFStringRef)pref, CFSTR("Dark"), 0) == kCFCompareEqualTo)
++				return 1;
++
++		CFRelease(pref);
++	}
++
++	return 0;
++}
+diff --git a/gitg/meson.build b/gitg/meson.build
+index 85688b65..1f90589a 100644
+--- a/gitg/meson.build
++++ b/gitg/meson.build
+@@ -52,6 +52,7 @@ sources = gitg_sources + files(
+   'gitg-ui-elements.vala',
+   'gitg-window.vala',
+   'gitg.vala',
++  'is_dark_mode_enabled.c',
+ )
+ 
+ deps = [

@@ -67,6 +67,10 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
 /usr/libexec/PlistBuddy -c "Add LSApplicationCategoryType string \
   'public.app-category.developer-tools'" "$GITG_PLIST"
 
+# enable dark mode (menubar only, GTK theme is reponsible for the rest)
+/usr/libexec/PlistBuddy -c \
+  "Add NSRequiresAquaSystemAppearance bool 'false'" "$GITG_PLIST"
+
 /usr/libexec/PlistBuddy -c "Add NSDesktopFolderUsageDescription string \
   'Gitg needs your permission to access the Desktop folder.'" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c "Add NSDocumentsFolderUsageDescription string \
