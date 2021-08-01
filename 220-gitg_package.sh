@@ -50,9 +50,9 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
   "$GITG_PLIST"
 
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleShortVersionString '$(gitg_get_version)'" "$GITG_PLIST"
+  "Set CFBundleShortVersionString '$(gitg_get_version_from_git)'" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleVersion '$(gitg_get_version).$GITG_RELEASE'" "$GITG_PLIST"
+  "Set CFBundleVersion '$(gitg_get_version_from_git).$GITG_RELEASE'" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c \
   "Set LSMinimumSystemVersion '$SYS_SDK_VER'" "$GITG_PLIST"
 

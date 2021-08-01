@@ -13,6 +13,7 @@
 ### variables ##################################################################
 
 GITG_RELEASE=r1
+GITG_REPO_URL=https://gitlab.gnome.org/GNOME/gitg.git
 
 #------------------------------------------- application bundle directory layout
 
@@ -34,4 +35,16 @@ function gitg_get_version
 {
   xmllint --xpath "string(//moduleset/meson[@id='gitg']/branch/@version)" \
     "$SELF_DIR"/jhbuild/gitg.modules
+}
+
+function gitg_get_version_from_git
+{
+  local repo=$TMP/gitg
+
+  if [ ! -d "$repo" ]; then
+    git clone $GITG_REPO_URL "$repo" >/dev/null 2>&1
+  fi
+
+  git -C "$repo" checkout "$(gitg_get_version)" >/dev/null 2>&1
+  git -C "$repo" describe
 }
