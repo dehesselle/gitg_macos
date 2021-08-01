@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
+#
 # SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 ### description ################################################################
 
 # Start a JHBuild shell. Seems trivial, but the important part is to source
-# our customized configuration as well.
+# all our customized configuration.
 
 ### includes ###################################################################
 
@@ -19,5 +21,8 @@ done
 # Nothing here.
 
 ### main #######################################################################
+
+jhbuild_configure   # Reconfigure settings to match current system instead
+                    # of the system the toolset was built with.
 
 jhbuild shell
