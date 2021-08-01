@@ -2,23 +2,13 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
-  <repository name="bintray"      type="tarball" href="https://dl.bintray.com/"/>
-  <repository name="freedesktop"  type="tarball" href="https://gitlab.freedesktop.org/"/>
   <repository name="github"       type="tarball" href="https://github.com/"/>
   <repository name="gnome_ftp"    type="tarball" href="https://ftp.fau.de/gnome/sources/"/>
   <repository name="gnome_gitlab" type="tarball" href="https://gitlab.gnome.org/GNOME/"/>
   <repository name="gnome_org"    type="tarball" href="https://download.gnome.org/sources/"/>
   <repository name="gnu"          type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
-  <repository name="libreoffice"  type="tarball" href="https://dev-www.libreoffice.org/src/"/>
-  <repository name="poppler"      type="tarball" href="https://poppler.freedesktop.org/"/>
-  <repository name="sourceforge"  type="tarball" href="https://netcologne.dl.sourceforge.net/project/"/>
 
   <include href="gtk-osx.modules"/>
-
-  <!--
-          - Dependencies marked with TODO have not been investigated yet.
-            Maybe there are no dependencies or maybe they need to be added.
-  -->
 
   <!-- GNU Find Utilities https://www.gnu.org/software/findutils/ -->
   <autotools
@@ -31,6 +21,51 @@
       repo="gnu">
     </branch>
   </autotools>
+
+  <meson
+    id="gitg">
+    <!--
+      We are using master instead gnome-3-32 branch as we're already using
+      gtksourceview4. That gives us a 3.30+ version number though
+      (instead 3.32+).
+
+      module="gitg/-/archive/33bb5d2d896fcf2fc9a2ed50b236b727c5364895/gitg-33bb5d2d896fcf2fc9a2ed50b236b727c5364895.tar.gz"
+      version="33bb5d2d896fcf2fc9a2ed50b236b727c5364895"
+      hash="sha256:94940d9f20f8531798aa52aeb424f0d1e8976b918c4efbe312921abdf677bb54"
+    -->
+    <branch
+      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
+      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
+      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
+      repo="gnome_gitlab">
+      <patch
+        file="gitg_disable_libgit2_thread_test.patch"
+        strip="1">
+        <!--
+          FIXME:
+          We have compiled this with the required THREADSAFE:ON flag but it
+          fails to detect that. Disabling the check for now.
+        -->
+      </patch>
+      <patch
+        file="gitg_set_bundle_env.patch"
+        strip="1">
+      </patch>
+    </branch>
+    <dependencies>
+      <dep package="meta-gitg-dependencies"/>
+    </dependencies>
+  </meson>
+
+  <meson
+    id="gsettings-desktop-schemas">
+    <branch
+      module="gsettings-desktop-schemas/3.38/gsettings-desktop-schemas-3.38.0.tar.xz"
+      version="3.38.0"
+      hash="sha256:5704c8266004b296036671f223c705dc046aa694a1b1abb87c67e7d2747a8c67"
+      repo="gnome_org">
+    </branch>
+  </meson>
 
   <!-- Spell checking for GTK https://wiki.gnome.org/Projects/gspell -->
   <autotools
@@ -87,61 +122,6 @@
     </branch>
   </autotools>
 
-  <autotools
-    id="libssh2"
-    autogen-sh="configure">
-    <branch
-      module="libssh2/libssh2/releases/download/libssh2-1.9.0/libssh2-1.9.0.tar.gz"
-      version="1.9.0"
-      hash="sha256:d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd"
-      repo="github">
-    </branch>
-  </autotools>
-
-  <cmake
-    id="libgit2"
-    cmakeargs="-DTHREADSAFE=ON">
-    <branch
-      module="libgit2/libgit2/releases/download/v1.1.0/libgit2-1.1.0.tar.gz"
-      version="1.1.0"
-      hash="sha256:ad73f845965cfd528e70f654e428073121a3fa0dc23caac81a1b1300277d4dba"
-      repo="github">
-    </branch>
-    <dependencies>
-      <dep package="libssh2"/>
-    </dependencies>
-  </cmake>
-
-  <autotools
-    id="libgee">
-    <branch
-      module="libgee/0.20/libgee-0.20.4.tar.xz"
-      version="0.20.4"
-      hash="sha256:524c1bf390f9cdda4fbd9a47b269980dc64ab5280f0801b53bc69d782c72de0e"
-      repo="gnome_org">
-    </branch>
-  </autotools>
-
-  <meson
-    id="json-glib">
-    <branch
-      module="json-glib/1.6/json-glib-1.6.2.tar.xz"
-      version="1.6.2"
-      hash="sha256:a33d66c6d038bda46b910c6c6d59c4e15db014e363dc997a0414c2e07d134f24"
-      repo="gnome_org">
-    </branch>
-  </meson>
-
-  <meson
-    id="gsettings-desktop-schemas">
-    <branch
-      module="gsettings-desktop-schemas/3.38/gsettings-desktop-schemas-3.38.0.tar.xz"
-      version="3.38.0"
-      hash="sha256:5704c8266004b296036671f223c705dc046aa694a1b1abb87c67e7d2747a8c67"
-      repo="gnome_org">
-    </branch>
-  </meson>
-
   <!-- ImageMagick 6 https://legacy.imagemagick.org -->
   <autotools
     id="imagemagick"
@@ -161,6 +141,51 @@
     <dependencies>
       <dep package="pango"/>
     </dependencies>
+  </autotools>
+
+  <meson
+    id="json-glib">
+    <branch
+      module="json-glib/1.6/json-glib-1.6.2.tar.xz"
+      version="1.6.2"
+      hash="sha256:a33d66c6d038bda46b910c6c6d59c4e15db014e363dc997a0414c2e07d134f24"
+      repo="gnome_org">
+    </branch>
+  </meson>
+
+  <autotools
+    id="libgee">
+    <branch
+      module="libgee/0.20/libgee-0.20.4.tar.xz"
+      version="0.20.4"
+      hash="sha256:524c1bf390f9cdda4fbd9a47b269980dc64ab5280f0801b53bc69d782c72de0e"
+      repo="gnome_org">
+    </branch>
+  </autotools>
+
+  <cmake
+    id="libgit2"
+    cmakeargs="-DTHREADSAFE=ON">
+    <branch
+      module="libgit2/libgit2/releases/download/v1.1.0/libgit2-1.1.0.tar.gz"
+      version="1.1.0"
+      hash="sha256:ad73f845965cfd528e70f654e428073121a3fa0dc23caac81a1b1300277d4dba"
+      repo="github">
+    </branch>
+    <dependencies>
+      <dep package="libssh2"/>
+    </dependencies>
+  </cmake>
+
+  <autotools
+    id="libssh2"
+    autogen-sh="configure">
+    <branch
+      module="libssh2/libssh2/releases/download/libssh2-1.9.0/libssh2-1.9.0.tar.gz"
+      version="1.9.0"
+      hash="sha256:d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd"
+      repo="github">
+    </branch>
   </autotools>
 
   <meson
@@ -222,41 +247,6 @@
       <dep package="shared-mime-info"/>
     </dependencies>
   </metamodule>
-
-  <meson
-    id="gitg">
-    <!--
-      We are using master instead gnome-3-32 branch as we're already using
-      gtksourceview4. That gives us a 3.30+ version number though
-      (instead 3.32+).
-
-      module="gitg/-/archive/33bb5d2d896fcf2fc9a2ed50b236b727c5364895/gitg-33bb5d2d896fcf2fc9a2ed50b236b727c5364895.tar.gz"
-      version="33bb5d2d896fcf2fc9a2ed50b236b727c5364895"
-      hash="sha256:94940d9f20f8531798aa52aeb424f0d1e8976b918c4efbe312921abdf677bb54"
-    -->
-    <branch
-      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
-      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
-      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
-      repo="gnome_gitlab">
-      <patch
-        file="gitg_disable_libgit2_thread_test.patch"
-        strip="1">
-        <!--
-          FIXME:
-          We have compiled this with the required THREADSAFE:ON flag but it
-          fails to detect that. Disabling the check for now.
-        -->
-      </patch>
-      <patch
-        file="gitg_set_bundle_env.patch"
-        strip="1">
-      </patch>
-    </branch>
-    <dependencies>
-      <dep package="meta-gitg-dependencies"/>
-    </dependencies>
-  </meson>
 
   <!-- Rust https://www.rust-lang.org
        Rust has a custom setup routine (rustup) which is wrapped into
