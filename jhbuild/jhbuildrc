@@ -86,7 +86,7 @@ class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
                                           moduleset + '.modules'))):
             config.moduleset = moduleset
         else:
-            config.moduleset = 'https://raw.githubusercontent.com/dehesselle/mibap/master/jhbuild/bootstrap.modules'
+            config.moduleset = 'https://raw.githubusercontent.com/dehesselle/gitg_macos/master/jhbuild/bootstrap.modules'
 
         args = ['meta-bootstrap']
 
@@ -132,6 +132,7 @@ def osx_ver():
 
 # Determine the XCode Version:
 def xcode_ver():
+   global conditions
    devdir = _popen("xcode-select -p")
    if devdir != "/Library/Developer/CommandLineTools":
        ver = _popen("xcodebuild -version")
@@ -141,6 +142,8 @@ def xcode_ver():
            _xcode_ver = float(vernum.group(1))
            if _xcode_ver < 5.0:
                raise EnvironmentError("Xcode Version %f is not supported; if you want to build with Xcode versions earlier than 5.0 checkout tag Last-Lion." % _xcode_ver)
+           if _xcode_ver < 10.0:
+               conditions.add('pre-Mavericks')
            return _xcode_ver
        else:
            raise EnvironmentError("No suitable Xcode found. Xcode 5.0 or later is required.")
@@ -352,11 +355,6 @@ def setup_sdk(sdkdir, architectures=[_default_arch]):
     # GMP deliberately attempts to use CC_FOR_BUILD with no separate
     # cflags so we need to force it:
     module_extra_env['gmp'] = {'CC_FOR_BUILD':os.environ['CC'] + ' ' + os.environ['CFLAGS']}
-    # Kill a couple of noisy warnings for webkit1:
-    # module_extra_env["webkit"] = {'CPPFLAGS':os.environ['CPPFLAGS'] + " -Wno-unused-local-typedef -Wno-missing-field-initializsers"}
-    # module_extra_env["webkit1gtk3"] = {'CPPFLAGS':os.environ['CPPFLAGS'] + " -Wno-unused-local-typedef -Wno-missing-field-initializsers -Wno-undefined-bool-conversion"}
-    # module_extra_env["webkit"] = {'CXXFLAGS':os.environ['CXXFLAGS'] + ' -Wno-inconsistent-missing-override'}
-    # module_extra_env["webkit1gtk3"] = {'CXXFLAGS':os.environ['CXXFLAGS'] + ' -Wno-inconsistent-missing-override'}
 
     # Finally when building normally we need to force CFLAGS_FOR_BUILD
     # to our current CFLAGS so that everything will link with other
@@ -385,7 +383,7 @@ modulesets_dir = ""
 # A list of the modules to build. You can override this in
 # .jhbuildrc-custom or on the command line.
 #
-modules = [ 'meta-gtk-osx-bootstrap', 'meta-gtk-osx-core' ]
+modules = [ 'meta-gtk-osx-bootstrap', 'meta-gtk-osx-gtk3' ]
 
 # A list of modules to skip.
 #
@@ -609,6 +607,7 @@ else:
     environ_append('PYTHONPATH', _python_install_path, ':')
     os.environ['PYTHON'] = sys.executable
 
+module_extra_env["spidermonkey"] = {'AUTOCONF':'autoconf'}
 # Unset this so we don't mess with the check for not starting
 # recursively.
 os.unsetenv("JHB")
