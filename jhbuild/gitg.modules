@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
   <repository name="github"       type="tarball" href="https://github.com/"/>
-  <repository name="gnome_ftp"    type="tarball" href="https://ftp.fau.de/gnome/sources/"/>
   <repository name="gnome_gitlab" type="tarball" href="https://gitlab.gnome.org/GNOME/"/>
   <repository name="gnome_org"    type="tarball" href="https://download.gnome.org/sources/"/>
   <repository name="gnu"          type="tarball" href="http://ftp.halifax.rwth-aachen.de/gnu/"/>
@@ -42,9 +41,8 @@
         file="gitg_disable_libgit2_thread_test.patch"
         strip="1">
         <!--
-          FIXME:
-          We have compiled this with the required THREADSAFE:ON flag but it
-          fails to detect that. Disabling the check for now.
+          https://gitlab.gnome.org/GNOME/gitg/-/issues/333
+          test for GGIT_FEATURE_THREADS is incorrect
         -->
       </patch>
       <patch
@@ -75,7 +73,7 @@
       module="gspell/1.9/gspell-1.9.1.tar.xz"
       version="1.9.1"
       hash="sha256:dcbb769dfdde8e3c0a8ed3102ce7e661abbf7ddf85df08b29915e92cd723abdd"
-      repo="gnome_ftp">
+      repo="gnome_org">
       <patch
         file="gspell_makefile_objc.patch"
         strip="1">
@@ -226,7 +224,8 @@
     </branch>
   </meson>
 
-  <metamodule id="meta-gitg-dependencies">
+  <metamodule
+    id="meta-gitg-dependencies">
     <dependencies>
       <dep package="adwaita-icon-theme"/>
       <dep package="gobject-introspection"/>
@@ -253,18 +252,21 @@
        Rust has a custom setup routine (rustup) which is wrapped into
        a cmake file introduced by that patch below.
   -->
-  <cmake id="rust"
-         cmakeargs="-DVERSION=1.48.0"
-         supports-non-srcdir-builds="no"
-         use-ninja="no">
-    <branch module="rust-lang/rustup/archive/1.22.1.tar.gz"
-            version="1.22.1"
-            hash="sha256:ad46cc624f318a9493aa62fc9612a450564fe20ba93c689e0ad856bff3c64c5b"
-            repo="github"
-            checkoutdir="rustup-1.22.1"
-            rename-tarball="rustup-1.22.1.tar.gz">
-      <patch file="rust_cmake_install.patch"
-             strip="1">
+  <cmake
+    id="rust"
+    cmakeargs="-DVERSION=1.48.0"
+    supports-non-srcdir-builds="no"
+    use-ninja="no">
+    <branch
+      module="rust-lang/rustup/archive/1.22.1.tar.gz"
+      version="1.22.1"
+      hash="sha256:ad46cc624f318a9493aa62fc9612a450564fe20ba93c689e0ad856bff3c64c5b"
+      repo="github"
+      checkoutdir="rustup-1.22.1"
+      rename-tarball="rustup-1.22.1.tar.gz">
+      <patch
+        file="rust_cmake_install.patch"
+        strip="1">
       </patch>
     </branch>
   </cmake>
