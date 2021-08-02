@@ -210,8 +210,9 @@
       repo="gnome_org">
     </branch>
     <dependencies>
-      <dep package="libssh2"/>
+      <dep package="glib"/>
       <dep package="libgit2"/>
+      <dep package="gobject-introspection"/>
     </dependencies>
   </meson>
 
