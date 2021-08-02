@@ -227,24 +227,24 @@
 
   <metamodule id="meta-gitg-dependencies">
     <dependencies>
-      <dep package="libdazzle"/>
-      <dep package="libgit2-glib"/>
-      <dep package="libgit2"/>
-      <dep package="gsettings-desktop-schemas"/>
-      <dep package="libgee"/>
-      <dep package="json-glib"/>
-      <dep package="gtk+-3.0"/>
-      <dep package="vala"/>
       <dep package="adwaita-icon-theme"/>
+      <dep package="gobject-introspection"/>
+      <dep package="gsettings-desktop-schemas"/>
+      <dep package="gspell"/>
+      <dep package="gtk+-3.0"/>
       <dep package="gtksourceview3"/>
+      <dep package="hicolor-icon-theme"/>
+      <dep package="json-glib"/>
+      <dep package="libdazzle"/>
+      <dep package="libgee"/>
+      <dep package="libgit2"/>
+      <dep package="libgit2-glib"/>
       <dep package="libpeas"/>
       <dep package="libsecret"/>
       <dep package="libsoup"/>
       <dep package="pkg-config"/>
-      <dep package="gobject-introspection"/>
-      <dep package="gspell"/>
-      <dep package="libsecret"/>
       <dep package="shared-mime-info"/>
+      <dep package="vala"/>
     </dependencies>
   </metamodule>
 
