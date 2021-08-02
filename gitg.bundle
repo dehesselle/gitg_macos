@@ -20,34 +20,16 @@
     -->
     <destination overwrite="yes">${env:ARTIFACT_DIR}</destination>
 
-    <image>
-      <!-- Not implemented yet (DMG image). -->
-    </image>
-
     <!-- Comment this out to keep the install names in binaries -->
     <run-install-name-tool/>
 
-    <!-- Optionally specify a launcher script to use. If the
-         application sets up everything needed itself, like
-         environment variable, linker paths, etc, a launcher script is
-         not needed. If the source path is left out, the default
-         script will be used.
-    <launcher-script>${project}/gtk3-launcher.sh</launcher-script >
-    -->
-
-    <!-- Not implemented: Optional runtime, could be python or mono
-         for example.
-    -->
-    <!-- runtime copy="yes">/usr/bin/python</runtime -->
     <!-- Indicate the active gtk version to use. This is needed only
          for gtk+-3.0 projects. -->
     <gtk>gtk+-3.0</gtk>
   </meta>
 
-  <!-- The special macro "${project}" refers to the directory where
-       this bundle file is located. The application name and bundle
-       identifier are taken from the plist file.
-  -->
+  <!-- The application name and bundle identifier are taken from the
+       plist file. -->
   <plist>${prefix}/tmp/Info.plist</plist>
 
   <main-binary>${prefix}/bin/gitg</main-binary>
@@ -103,10 +85,19 @@
   <translations  name="gdk-pixbuf">
     ${prefix}/share/locale
   </translations>
+  <translations  name="gitg">
+    ${prefix}/share/locale
+  </translations>
   <translations  name="gtk30">
     ${prefix}/share/locale
   </translations>
   <translations  name="gtk30-properties">
+    ${prefix}/share/locale
+  </translations>
+  <translations  name="gtk-mac-integration">
+    ${prefix}/share/locale
+  </translations>
+  <translations  name="gtksourceview-4">
     ${prefix}/share/locale
   </translations>
 

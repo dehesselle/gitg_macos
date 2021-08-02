@@ -80,8 +80,7 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
 /usr/libexec/PlistBuddy -c "Add NSRemoveableVolumesUsageDescription string \
   'Gitg needs your permission to access removable volumes.'" "$GITG_PLIST"
 
-#------------------------------------------------------- add GitHub CI variables
-
+# add GitHUB CI information
 if $CI_GITHUB; then
   for var in REPOSITORY REF RUN_NUMBER SHA; do
     # use awk to create camel case strings (e.g. RUN_NUMBER to RunNumber)
@@ -90,6 +89,17 @@ if $CI_GITHUB; then
         for (i=1; i<=NF; i++)
         printf "%s", toupper(substr($i,1,1)) tolower(substr($i,2))
       }'
-    ) string $(eval echo \$GITHUB_$var)" "$GITG_APP_CON_DIR"/Info.plist
+    ) string $(eval echo \$GITHUB_$var)" "$GITG_PLIST"
   done
 fi
+
+# add supported languages
+/usr/libexec/PlistBuddy -c "Add CFBundleLocalizations array" "$GITG_PLIST"
+for locale in "$SRC_DIR"/gitg-*/po/*.po; do
+  if [ "$locale" = "en_GB" ]; then
+    locale="en"
+  fi
+  /usr/libexec/PlistBuddy -c \
+    "Add CFBundleLocalizations: string '$(basename -s .po $locale)'" \
+    "$GITG_PLIST"
+done
