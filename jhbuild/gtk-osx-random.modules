@@ -20,6 +20,8 @@
               href="http://frodo.looijaard.name/system/files/software/"/>
   <repository type="tarball" name="paguire" href="https://releases.pagure.org/"/> 
   <repository type="tarball" name="pcre" href="https://ftp.pcre.org/pub/"/>
+  <repository type="tarball" name="fossies"
+              href="https://fossies.org/"/>
 
   <cmake id="graphviz">
     <branch module="2.47.0/graphviz-2.47.0.tar.bz2" version="2.47.0"
@@ -60,7 +62,7 @@
 
   <autotools id="frodo-getopt" autogen-sh="configure"
              supports-non-srcdir-builds="no">
-    <branch repo="frodo" version="1.1.6" module="getopt/getopt-1.1.6.tar.gz"
+    <branch repo="fossies" version="1.1.6" module="linux/misc/getopt-1.1.6.tar.gz"
             hash="sha256:d0bf1dc642a993e7388a1cddfb9409bed375c21d5278056ccca3a0acd09dc5fe">
        <patch file="frodo-getopt-autotools.patch" strip="1"/>
     </branch>
