@@ -14,12 +14,12 @@
 
 TOOLSET_VER=v$VERSION
 
-TOOLSET_VOLNAME=mibap_$TOOLSET_VER
+TOOLSET_VOLNAME=jhb_$TOOLSET_VER
 
 # A disk image containing a built version of the whole toolset.
-# https://github.com/dehesselle/mibap
-TOOLSET_URL=https://github.com/dehesselle/mibap/releases/download/\
-$TOOLSET_VER/$TOOLSET_VOLNAME.dmg
+# https://github.com/dehesselle/gitg_macos
+TOOLSET_URL=https://github.com/dehesselle/gitg_macos/releases/download/\
+$TOOLSET_VOLNAME/$TOOLSET_VOLNAME.dmg
 
 TOOLSET_REPO_DIR=$WRK_DIR/repo   # persistent storage for downloaded dmg
 
@@ -27,7 +27,7 @@ if [ -z "$TOOLSET_OVERLAY_FILE" ]; then
   TOOLSET_OVERLAY_FILE=ram
 fi
 
-TOOLSET_OVERLAY_SIZE=3   # writable overlay, unit in GiB
+TOOLSET_OVERLAY_SIZE=1   # writable overlay, unit in GiB
 
 ### functions ##################################################################
 
@@ -72,7 +72,7 @@ function toolset_install
     newfs_hfs -v "overlay" "$device" >/dev/null
     echo_i "$TOOLSET_OVERLAY_SIZE GiB ram attached to $device"
   else                                            # overlay on disk
-    hdiutil create -size 3g -fs HFS+ -nospotlight \
+    hdiutil create -size ${TOOLSET_OVERLAY_SIZE}g -fs HFS+ -nospotlight \
       -volname overlay "$TOOLSET_OVERLAY_FILE"
     echo_i "$TOOLSET_OVERLAY_SIZE GiB sparseimage attached to $device"
     device=$(hdiutil attach -nomount "$TOOLSET_OVERLAY_FILE" |
