@@ -12,7 +12,7 @@
 
 ### variables ##################################################################
 
-TOOLSET_VER=v$VERSION
+TOOLSET_VER=$VERSION
 
 TOOLSET_VOLNAME=jhb_$TOOLSET_VER
 
@@ -59,9 +59,8 @@ function toolset_install
   # Prepare a script for mass-creating directories. We have to do this before
   # untion-mounting as macOS' 'find' won't see the directories anymore after.
   # (GNU's 'find' does)
-  find "$VER_DIR" -type d ! -path "$VAR_DIR/*" ! -path "$SRC_DIR/*" \
+  find "$VER_DIR" -type d ! -path "$VAR_DIR/build/*" ! -path "$SRC_DIR/*" \
       -exec echo "mkdir {}" \; > "$WRK_DIR"/create_dirs.sh
-  echo "mkdir $BLD_DIR" >> "$WRK_DIR"/create_dirs.sh
   sed -i "" "1d" "$WRK_DIR"/create_dirs.sh   # remove first line ("file exists")
   chmod 755 "$WRK_DIR"/create_dirs.sh
 

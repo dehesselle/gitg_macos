@@ -144,13 +144,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: gitg_build_toolset
-        path: ${{ github.workspace }}/jhb_v${{ steps.toolset.outputs.version }}.dmg
+        path: ${{ github.workspace }}/jhb_${{ steps.toolset.outputs.version }}.dmg
 
     - name: upload toolset checksum
       uses: actions/upload-artifact@v2
       with:
         name: gitg_build_toolset.sha256
-        path: ${{ github.workspace }}/jhb_v${{ steps.toolset.outputs.version }}.dmg.sha256
+        path: ${{ github.workspace }}/jhb_${{ steps.toolset.outputs.version }}.dmg.sha256
 
     - name: upload gitg disk image
       uses: actions/upload-artifact@v2
