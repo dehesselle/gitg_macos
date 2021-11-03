@@ -27,23 +27,16 @@
       We are using master instead gnome-3-32 branch as we're already using
       gtksourceview4. That gives us a 3.30+ version number though
       (instead 3.32+).
-
-      module="gitg/-/archive/33bb5d2d896fcf2fc9a2ed50b236b727c5364895/gitg-33bb5d2d896fcf2fc9a2ed50b236b727c5364895.tar.gz"
-      version="33bb5d2d896fcf2fc9a2ed50b236b727c5364895"
-      hash="sha256:94940d9f20f8531798aa52aeb424f0d1e8976b918c4efbe312921abdf677bb54"
     -->
     <branch
-      module="gitg/-/archive/01c595f4290eb8e0d9f32b60137f6c3a4ca59df5/gitg-01c595f4290eb8e0d9f32b60137f6c3a4ca59df5.tar.gz"
-      version="01c595f4290eb8e0d9f32b60137f6c3a4ca59df5"
-      hash="sha256:03d7e7e1d72119ce3913c07d2292628c42226d18d39534ecd8f32dbfa2352342"
+      module="gitg/-/archive/b9f102c7/gitg-b9f102c7.tar.gz"
+      version="b9f102c7"
+      hash="sha256:744beddcd91dd6baf722f958a9a9d6cd6ed799b5dae153d5083c083e1666b7d5"
       repo="gnome_gitlab">
       <patch
         file="gitg_disable_libgit2_thread_test.patch"
         strip="1">
-        <!--
-          https://gitlab.gnome.org/GNOME/gitg/-/issues/333
-          test for GGIT_FEATURE_THREADS is incorrect
-        -->
+        <!-- test for GGIT_FEATURE_THREADS fails -->
       </patch>
       <patch
         file="gitg_set_bundle_env.patch"
