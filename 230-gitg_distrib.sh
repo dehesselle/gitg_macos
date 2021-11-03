@@ -6,34 +6,39 @@
 
 ### description ################################################################
 
-# Create disk image for distribution.
+# Create a disk image for distribution.
 
-### includes ###################################################################
+### shellcheck #################################################################
+
+# Nothing here.
+
+### dependencies ###############################################################
 
 # shellcheck disable=SC1090 # can't point to a single source here
 for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
   source "$script";
 done
 
-### settings ###################################################################
+### variables ##################################################################
 
-# shellcheck disable=SC2034 # this is from ansi_.sh
-ANSI_TERM_ONLY=false   # use ANSI control characters even if not in terminal
+# Nothing here.
 
-error_trace_enable
+### functions ##################################################################
+
+# Nothing here.
 
 ### main #######################################################################
 
-# Create background for development snapshots. This is not meant for
-# official releases, those will be repackaged eventually (they also need
-# to be signed and notarized).
+error_trace_enable
+
+#------------------------------------------------------------- create disk image
+
 convert -size 460x400 xc:transparent \
   -font Andale-Mono -pointsize 64 -fill black \
   -draw "text 20,60 'Gitg'" \
   -font Andale-Mono -pointsize 30 -fill black \
   -draw "text 20,120 '$(gitg_get_version_from_git)'" \
-  -draw "text 20,160 'release $GITG_RELEASE'" \
+  -draw "text 20,160 '($VERSION)'" \
   "$SRC_DIR"/gitg_dmg.png
 
-# Create the disk image.
 dmgbuild_run "$ARTIFACT_DIR"/gitg.dmg

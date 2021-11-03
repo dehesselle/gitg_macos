@@ -12,7 +12,6 @@
 
 ### variables ##################################################################
 
-GITG_RELEASE=2
 GITG_REPO_URL=https://gitlab.gnome.org/GNOME/gitg.git
 
 #------------------------------------------- application bundle directory layout
@@ -21,7 +20,6 @@ GITG_APP_DIR=$ARTIFACT_DIR/gitg.app
 
 GITG_APP_CON_DIR=$GITG_APP_DIR/Contents
 GITG_APP_RES_DIR=$GITG_APP_CON_DIR/Resources
-GITG_APP_FRA_DIR=$GITG_APP_CON_DIR/Frameworks
 GITG_APP_BIN_DIR=$GITG_APP_RES_DIR/bin
 GITG_APP_ETC_DIR=$GITG_APP_RES_DIR/etc
 GITG_APP_EXE_DIR=$GITG_APP_CON_DIR/MacOS
