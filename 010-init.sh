@@ -4,42 +4,37 @@
 
 ### description ################################################################
 
-# This is the main initialization file to setup the environment. Its purpose is
-#   - to provide some basic configuration in its variables section
-#     which do not fit into any package (see files in packages directory)
-#     and/or all the other files depend upon
-#   - source all other scripts
-#   - run a few essential checks to see if we're good
+# This is the main settings file that always gets sourced first. It contains
+# some basic configuration itself and is then responsible for sourcing all
+# other necessary files.
+# After this file has been processed, the environment is fully set up
+# with lots of variables and functions so that the real work can begin.
 #
-# It's meant to be sourced by all other scripts and supposed to be a "passive"
-# file, i.e. it defines variables and functions but does not do anything on its
-# own. However, this is only 99% true at the moment as the above mentioned
-# checks are capable of calling it quits if a few very fundamental things appear
-# to be broken.
+# Besides the one 'exit' at the bottom of this script, this file is considered
+# to be "passive", i.e. it only defines variables and functions but does not
+# do any work on its own.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 # shellcheck disable=SC2034 # we only use exports if we really need them
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Shell code I share between projects comes from bash_d.
 # https://github.com/dehesselle/bash_d
 
-INCLUDE_DIR=$(dirname "${BASH_SOURCE[0]}")/bash_d
-# shellcheck source=bash_d/1_include.sh
-source "$INCLUDE_DIR"/1_include.sh
-include_file echo
-include_file error
-include_file lib
-include_file sed
+source "$(dirname "${BASH_SOURCE[0]}")"/bash_d/bash_d.sh
+bash_d_include echo
+bash_d_include error
+bash_d_include lib
+bash_d_include sed
 
 ### variables ##################################################################
 
 #--------------------------------------------------------------- toolset version
 
-VERSION=0.2
+VERSION=3    # also used for CFBundleVersion, increment this with every release!
 
 #-------------------------------------------------------------- target OS by SDK
 
@@ -47,13 +42,12 @@ VERSION=0.2
 # (which is our minimum system requirement/target) and fallback to whatever
 # SDK is available as the default one.
 
-if [ -z "$SDKROOT" ]; then
-  SDKROOT=$(xcodebuild -version -sdk macosx10.11 Path 2>/dev/null ||
-            xcodebuild -version -sdk macosx Path)
-fi
-export SDKROOT
+export SDKROOT=${SDKROOT:-$(\
+  xcodebuild -version -sdk macosx10.11 Path 2>/dev/null ||
+  xcodebuild -version -sdk macosx Path)\
+}
 
-#-------------------------------------------------------------- detect GitHub CI
+#--------------------------------------------------------------------- detect CI
 
 # Make sure we can use this variable as a boolean.
 
@@ -69,9 +63,7 @@ fi
 # default, being directly below /Users/Shared, is guaranteed user-writable
 # and present on every macOS system.
 
-if [ -z "$WRK_DIR" ]; then
-  WRK_DIR=/Users/Shared/work
-fi
+WRK_DIR=${WRK_DIR:-/Users/Shared/work}
 
 #---------------------------- directories: FSH-like layout for the build toolset
 
@@ -82,7 +74,7 @@ INC_DIR=$VER_DIR/include
 LIB_DIR=$VER_DIR/lib
 VAR_DIR=$VER_DIR/var
 BLD_DIR=$VAR_DIR/build
-PKG_DIR=$VAR_DIR/cache/pkgs
+PKG_DIR=${PKG_DIR:-$VAR_DIR/cache/pkgs}
 SRC_DIR=$VER_DIR/usr/src
 TMP_DIR=$VER_DIR/tmp
 OPT_DIR=$VER_DIR/opt
@@ -100,13 +92,13 @@ export TMPDIR=$TMP_DIR   # TMPDIR is the common macOS default
 export XDG_CACHE_HOME=$VAR_DIR/cache  # instead ~/.cache
 export XDG_CONFIG_HOME=$ETC_DIR       # instead ~/.config
 
-#-------------------------------------------------------------- directories: pip
+#----------------------------------------------------------- directories: Python
 
 export PIP_CACHE_DIR=$XDG_CACHE_HOME/pip       # instead ~/Library/Caches/pip
-export PIPENV_CACHE_DIR=$XDG_CACHE_HOME/pipenv # instead ~/Library/Caches/pipenv
+
+export PYTHONPYCACHEPREFIX=$TMP_DIR            # redirect __pycache__ here
 
 #--------------------------------------------------------- directories: artifact
-
 
 # In CI mode, the artifacts are placed into the respective project repositories
 # so they can be picked up from there. In non-CI mode the artifacts are
@@ -142,24 +134,6 @@ SELF_DIR=$(\
 
 ### main #######################################################################
 
-#---------------------------------------------------- check if WRK_DIR is usable
-
-# shellcheck disable=SC2046 # result is integer
-if  [ $(mkdir -p "$WRK_DIR" 2>/dev/null; echo $?) -eq 0 ] &&
-    [ -w "$WRK_DIR" ] ; then
-  : # WRK_DIR has been created or was already there and is writable
-else
-  echo_e "WRK_DIR not usable: $WRK_DIR"
-  exit 1
-fi
-
-#----------------------------------------------------- check for presence of SDK
-
-if [ ! -d "$SDKROOT" ]; then
-  echo_e "SDK not found: $SDKROOT"
-  exit 1
-fi
-
 #----------------------------------------------------------- source our packages
 
 # Packages are designed/allowed to silently depend on this file, therefore this
@@ -170,6 +144,14 @@ for package in "$SELF_DIR"/packages/*.sh; do
   source "$package"
 done
 
-#---------------------------------------------------- check recommended versions
+#---------------------------------------------------------- perform basic checks
+
+if sys_check_wrkdir &&
+   sys_check_sdkroot &&
+   sys_check_usr_local; then
+  :         # all is well
+else
+  exit 1    # cannot continue
+fi
 
 sys_check_versions

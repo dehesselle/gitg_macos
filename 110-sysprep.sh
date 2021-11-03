@@ -6,17 +6,13 @@
 
 ### description ################################################################
 
-# This script performs system preparation tasks - basically the tings we need
-# to take care of before even setting up JHBuild. Performing checks
-# like running check_sys_ver are not part of this file (see bottom of
-# 010-init.sh), as that would mean that those checks are only run exactly once,
-# which is not what we want.
+# Prepare the system so we can setup JHBuild.
 
 ### shellcheck #################################################################
 
 # Nothing here.
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # shellcheck disable=SC1090 # can't point to a single source here
 for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
@@ -32,6 +28,8 @@ done
 # Nothing here.
 
 ### main #######################################################################
+
+error_trace_enable
 
 #---------------------------------------------- print main directory and version
 

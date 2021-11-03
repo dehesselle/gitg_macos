@@ -4,27 +4,24 @@
 
 ### description ################################################################
 
-# This file contains everything related to setup ccache.
+# Using ccache greatly reduces build times.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Nothing here.
 
 ### variables ##################################################################
 
-if [ -z "$CCACHE_DIR" ]; then
-  CCACHE_DIR=$WRK_DIR/ccache
-fi
-export CCACHE_DIR
+export CCACHE_DIR=${CCACHE_DIR:-$WRK_DIR/ccache}
 
 # https://ccache.dev
 # https://github.com/ccache/ccache
 # https://github.com/dehesselle/ccache_macos
-CCACHE_VER=4.3r2
+CCACHE_VER=4.4.2r1
 CCACHE_URL=https://github.com/dehesselle/ccache_macos/releases/download/\
 v$CCACHE_VER/ccache_v$CCACHE_VER.tar.xz
 

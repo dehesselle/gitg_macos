@@ -19,7 +19,7 @@
 
 # https://dmgbuild.readthedocs.io/en/latest/
 # https://github.com/al45tair/dmgbuild
-# including dependencies:
+# including optional dependencies:
 # - biplist: binary plist parser/generator
 # - pyobjc-*: framework wrappers
 DMGBUILD_REQUIREMENTS="\

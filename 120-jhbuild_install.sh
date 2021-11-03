@@ -12,7 +12,7 @@
 
 # Nothing here.
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # shellcheck disable=SC1090 # can't point to a single source here
 for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
@@ -30,6 +30,8 @@ done
 ### main #######################################################################
 
 error_trace_enable
+
+#----------------------------------------------------------------- setup JHBuild
 
 jhbuild_install
 jhbuild_configure

@@ -13,7 +13,7 @@
 
 # Nothing here.
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # shellcheck disable=SC1090 # can't point to a single source here
 for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
@@ -29,5 +29,9 @@ done
 # Nothing here.
 
 ### main #######################################################################
+
+if $CI_GITHUB; then   # break in CI, otherwise we get interactive prompt
+  error_trace_enable
+fi
 
 jhbuild bootstrap-gtk-osx

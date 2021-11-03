@@ -4,45 +4,46 @@
 
 ### description ################################################################
 
-# This file contains everything related to setup JHBuild.
+# Download, install and configure JHBuild.
 
 ### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
 
-### includes ###################################################################
+### dependencies ###############################################################
 
 # Nothing here.
 
 ### variables ##################################################################
 
-#----------------------------------------------------------------------- JHBuild
-
 export JHBUILDRC=$ETC_DIR/jhbuildrc
 export JHBUILDRC_CUSTOM=$JHBUILDRC-custom
 
 JHBUILD_REQUIREMENTS="\
-  certifi\
-  meson==0.57.1\
-  ninja==1.10.0.post2\
-  pygments==2.8.1\
+  certifi==2021.10.8\
+  meson==0.59.2\
+  ninja==1.10.2.2\
+  pygments==2.10.0\
 "
 
-# JHBuild build system (3.38.0+ from master branch because of specific patch)
+# JHBuild build system 3.38.0+ (a896cbf404461cab979fa3cd1c83ddf158efe83b)
+# from master branch because of specific patch
 # https://gitlab.gnome.org/GNOME/jhbuild
 # https://wiki.gnome.org/Projects/Jhbuild/Introduction
-JHBUILD_VER=a896cbf404461cab979fa3cd1c83ddf158efe83b
-JHBUILD_VER_SHORT=${JHBUILD_VER:0:7}
+JHBUILD_VER=a896cbf
 JHBUILD_URL=https://gitlab.gnome.org/GNOME/jhbuild/-/archive/$JHBUILD_VER/\
 jhbuild-$JHBUILD_VER.tar.bz2
 
-# This Python runtime powers JHBuild on system that do not provide Python 3.
+
+# We install a dedicated Python runtime for JHBuild. It is installed and
+# kept separately from the rest of this system. This does not interfere
+# with the Python runtime that gets build when building all our libraries
+# later.
 JHBUILD_PYTHON_VER_MAJOR=3
 JHBUILD_PYTHON_VER_MINOR=8
 JHBUILD_PYTHON_VER=$JHBUILD_PYTHON_VER_MAJOR.$JHBUILD_PYTHON_VER_MINOR
-JHBUILD_PYTHON_URL="https://gitlab.com/dehesselle/python_macos/-/jobs/\
-artifacts/master/raw/python_${JHBUILD_PYTHON_VER//.}_$(uname -p).tar.xz?\
-job=python${JHBUILD_PYTHON_VER//.}:$(uname -p)"
+JHBUILD_PYTHON_URL="https://gitlab.com/api/v4/projects/26780227/packages/\
+generic/python_macos/1/python_${JHBUILD_PYTHON_VER/./}_$(uname -p).tar.xz"
 JHBUILD_PYTHON_DIR=$OPT_DIR/Python.framework/Versions/$JHBUILD_PYTHON_VER
 JHBUILD_PYTHON_BIN_DIR=$JHBUILD_PYTHON_DIR/bin
 
@@ -82,18 +83,16 @@ function jhbuild_install
 
   # Install dependencies.
   # shellcheck disable=SC2086 # we need word splitting for requirements
-  "$JHBUILD_PYTHON_BIN_DIR"/pip$JHBUILD_PYTHON_VER \
-    install --prefix="$VER_DIR" $JHBUILD_REQUIREMENTS
+  $JHBUILD_PYTHON_PIP install --prefix=$VER_DIR $JHBUILD_REQUIREMENTS
 
   # Download JHBuild.
   local archive
   archive=$PKG_DIR/$(basename $JHBUILD_URL)
   curl -o "$archive" -L "$JHBUILD_URL"
   tar -C "$SRC_DIR" -xf "$archive"
-  mv "$SRC_DIR/jhbuild-$JHBUILD_VER" "$SRC_DIR/jhbuild-$JHBUILD_VER_SHORT"
 
   ( # Install JHBuild.
-    cd "$SRC_DIR"/jhbuild-$JHBUILD_VER_SHORT || exit 1
+    cd "$SRC_DIR"/jhbuild-$JHBUILD_VER || exit 1
     ./autogen.sh \
       --prefix="$VER_DIR" \
       --with-python="$JHBUILD_PYTHON_BIN_DIR"/python$JHBUILD_PYTHON_VER
@@ -109,14 +108,14 @@ function jhbuild_install
 function jhbuild_configure
 {
   # Copy JHBuild configuration files. We can't use 'cp' because that doesn't
-  # with the ramdisk overlay.
+  # work with the ramdisk overlay.
   mkdir -p "$(dirname "$JHBUILDRC")"
   # shellcheck disable=SC2094 # not the same file
-  cat "$SELF_DIR"/jhbuild/"$(basename "$JHBUILDRC")"        > "$JHBUILDRC"
-  # shellcheck disable=SC2094 # not the same file
-  cat "$SELF_DIR"/jhbuild/"$(basename "$JHBUILDRC_CUSTOM")" > "$JHBUILDRC_CUSTOM"
+  cat "$SELF_DIR"/jhbuild/"$(basename "$JHBUILDRC")" > "$JHBUILDRC"
 
   {
+    echo "# -*- mode: python -*-"
+
     # set moduleset directory
     echo "modulesets_dir = '$SELF_DIR/jhbuild'"
 
@@ -147,13 +146,13 @@ function jhbuild_configure
     # user home directory
     echo "os.environ[\"HOME\"] = \"$HOME\""
 
-    # less noise on the terminal if not running in GitHub CI
+    # less noise on the terminal if not CI
     if ! $CI_GITHUB; then
       echo "quiet_mode = True"
       echo "progress_bar = True"
     fi
 
-  } >> "$JHBUILDRC_CUSTOM"
+  } > "$JHBUILDRC_CUSTOM"
 }
 
 ### main #######################################################################
