@@ -5,8 +5,6 @@
 name: gitg
 on: push
 
-### build ######################################################################
-
 jobs:
   build:
     runs-on: macos-10.15
@@ -15,7 +13,7 @@ jobs:
       CCACHE_DIR: /Users/Shared/work/ccache
     steps:
 
-    ### prepare the environemnt ################################################
+    #--------------------------------------------------- prepare the environemnt
 
     - name: checkout this repository
       uses: actions/checkout@v2
@@ -37,15 +35,21 @@ jobs:
         key: ccache-toolset-${{ steps.cache_id.outputs.time }}
         restore-keys: ccache-toolset-
 
-    # GitHub does not provide old SDKs on their runners. There is no official
-    # public download available from Apple and I don't trust 3rd party sources
-    # (e.g. "phracker"), so I'm enabling this job to download a compressed
-    # tarball that contains the SDK from a non-public source.
-    # In order to use this, you need to setup a repository secret named
-    # SDK_DOWNLOAD_URL and give a link to a .tar.xz file.
-    # At the moment only 10.11.4 is supported as its hardcoded below.
+    # GitHub does not provide 10.11 SDK on their runners and no image older
+    # than Catalina. See here for what you can expect in their Catalina image:
+    # https://github.com/actions/virtual-environments/blob/main/images/macos/macos-10.15-Readme.md
+    #
+    # Official downloads from Apple are not accessible without a developer
+    # account and I don't trust 3rd party sources (e.g. "phracker"). So I'm
+    # using my own (non-public) source, but I'm providing the means to verify
+    # what I'm doing, see here:
+    # https://github.com/dehesselle/sdkchecksum
+    #
+    # In order to use your custom SDK_DOWNLOAD_URL, create a repository secret
+    # of said name and proivide a link to a .tar.xz file.
+    # At the moment, only 10.11.4 SDK is supported (hardcoded below).
     - name: install macOS SDK
-      if: env.SDK_DOWNLOAD_URL != null  # only runs if repository secret is set
+      if: env.SDK_DOWNLOAD_URL != null
       env:
         SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
       run: |
@@ -53,11 +57,9 @@ jobs:
         curl -L ${{ secrets.SDK_DOWNLOAD_URL }} | tar -C $WRK_DIR -xJp
         echo "SDKROOT=$WRK_DIR/$(basename ${SDK_DOWNLOAD_URL%%.tar.xz*})" >> $GITHUB_ENV
 
-    # Do you blindly trust downloads from the internet? You shouldn't.
-    # SDK verification (1/2): download a checksum file with documented
-    # traceability
+    # Checkout repository to verify SDK...
     - name: checkout sdkchecksum repository
-      if: env.SDK_DOWNLOAD_URL != null  # only runs if repository secret is set
+      if: env.SDK_DOWNLOAD_URL != null
       env:
         SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
       uses: actions/checkout@v2
@@ -66,9 +68,9 @@ jobs:
         path: sdkchecksum
         clean: false
 
-    # SDK verification (2/2): verify SDK against checksum
+    # ...and use it to verify
     - name: verify SDK
-      if: env.SDK_DOWNLOAD_URL != null  # only runs if repository secret is set
+      if: env.SDK_DOWNLOAD_URL != null
       env:
         SDK_DOWNLOAD_URL: ${{ secrets.SDK_DOWNLOAD_URL }}
       run: |
@@ -82,8 +84,6 @@ jobs:
           exit 1
         fi
 
-    ### disable /usr/local #####################################################
-
     # GitHub does not provide a clean macOS installation. We need to move the
     # pre-installed components out of the way so we don't pick them up by
     # accident.
@@ -92,7 +92,7 @@ jobs:
         cd /usr/local
         for dir in include lib share; do sudo mv $dir $dir.disabled; done
 
-    ### build toolset ##########################################################
+    #------------------------------------------------------------- build toolset
 
     - name: prepare system
       run: ./110-sysprep.sh
@@ -112,16 +112,7 @@ jobs:
     - name: install additional components
       run: ./160-jhbuild_other.sh
 
-    ### create toolset dmg #####################################################
-
-    - name: create toolset dmg
-      id: toolset
-      run: |
-        source 010-init.sh
-        toolset_create_dmg
-        echo "::set-output name=version::$VERSION"
-
-    ### build gitg #############################################################
+    #---------------------------------------------------------------- build Gitg
 
     - name: build gitg
       run: ./210-gitg_build.sh
@@ -132,32 +123,14 @@ jobs:
     - name: create gitg.dmg
       run: ./230-gitg_distrib.sh
 
-    ### undo previous changes to /usr/local ####################################
+    #---------------------------------------------------------- upload artifacts
 
-    # Undo what we did before, GitHub actions may depend on these.
+    # Restore /usr/local, GitHub actions depend on these.
     - name: re-enable /usr/local
       run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
-
-    ### upload artifacts #######################################################
-
-    - name: upload toolset disk image
-      uses: actions/upload-artifact@v2
-      with:
-        name: gitg_build_toolset
-        path: ${{ github.workspace }}/jhb_${{ steps.toolset.outputs.version }}.dmg
-
-    - name: upload toolset checksum
-      uses: actions/upload-artifact@v2
-      with:
-        name: gitg_build_toolset.sha256
-        path: ${{ github.workspace }}/jhb_${{ steps.toolset.outputs.version }}.dmg.sha256
 
     - name: upload gitg disk image
       uses: actions/upload-artifact@v2
       with:
         name: gitg_dmg
         path: ${{ github.workspace }}/gitg.dmg
-
-### release ####################################################################
-
-# TBD
