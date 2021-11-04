@@ -1,14 +1,19 @@
 # SPDX-FileCopyrightText: 2021 René de Hesselle <dehesselle@web.de>
+#
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 ### description ################################################################
 
 # This file contains everything related to gitg.
 
-### settings ###################################################################
+### shellcheck #################################################################
 
 # shellcheck shell=bash # no shebang as this file is intended to be sourced
-# shellcheck disable=SC2034 # no exports desired
+# shellcheck disable=SC2034 # multipe vars only used outside this script
+
+### dependencies ###############################################################
+
+# Nothing here.
 
 ### variables ##################################################################
 
@@ -46,3 +51,7 @@ function gitg_get_version_from_git
   git -C "$repo" checkout "$(gitg_get_version)" >/dev/null 2>&1
   git -C "$repo" describe
 }
+
+### main #######################################################################
+
+# Nothing here.

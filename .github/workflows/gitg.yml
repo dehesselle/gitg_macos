@@ -15,7 +15,7 @@ jobs:
 
     #--------------------------------------------------- prepare the environemnt
 
-    - name: checkout this repository
+    - name: checkout gitg_macos repository
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -27,7 +27,7 @@ jobs:
         format: "YYYY-MM-DD-HH-mm-ss"
 
     # Create a new cache, building ontop the most recent one.
-    - name: setup cache by id
+    - name: setup cache
       id: cache
       uses: actions/cache@v2
       with:
@@ -126,10 +126,10 @@ jobs:
     #---------------------------------------------------------- upload artifacts
 
     # Restore /usr/local, GitHub actions depend on these.
-    - name: re-enable /usr/local
+    - name: restore /usr/local
       run: for dir in /usr/local/*.disabled; do sudo mv $dir ${dir/.disabled/}; done
 
-    - name: upload gitg disk image
+    - name: upload Gitg disk image
       uses: actions/upload-artifact@v2
       with:
         name: gitg_dmg
