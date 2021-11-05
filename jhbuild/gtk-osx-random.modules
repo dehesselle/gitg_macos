@@ -104,16 +104,6 @@
             hash="sha256:7771525dff0185bfe9638ccce23faa0e1451757ddbda5a6c853bb80b923a512d"/>
   </autotools>
 
-<!-- Goocanvas2 is for gtk+-3. -->
-
-  <autotools id="goocanvas2" supports-non-srcdir-builds="no">
-    <branch module="goocanvas/2.0/goocanvas-2.0.4.tar.xz" version="2.0.4"
-	    hash="sha256:c728e2b7d4425ae81b54e1e07a3d3c8a4bd6377a63cffa43006045bceaa92e90"/>
-    <after>
-      <dep package="gtk+-3.0"/>
-    </after>
-  </autotools>
-
   <autotools id="hunspell" autogen-sh="autoreconf">
     <branch module="hunspell/hunspell/archive/v1.7.0.tar.gz" version="1.7.0"
             repo="github-tarball" checkoutdir="hunspell-1.7.0"
@@ -136,17 +126,12 @@
   </autotools>
 
   <autotools id="gmp">
-    <branch repo="ftp.gnu.org" module="gmp/gmp-6.1.2.tar.bz2" version="6.1.2">
-    </branch>
-  </autotools>
-
-  <autotools id="gmp">
     <branch repo="ftp.gnu.org" module="gmp/gmp-6.2.1.tar.bz2" version="6.2.1"
             hash="sha256:eae9326beb4158c386e39a356818031bd28f3124cf915f8c5b1dc4c7a36b4d7c">
     </branch>
   </autotools>
 
-  <autotools id='readline' autogen-sh="configure">
+  <autotools id="readline" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="readline/readline-8.1.tar.gz"
             version="8.1"
             hash="sha256:f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02">

@@ -95,16 +95,6 @@
       <dep package="libgpg-error"/>
     </dependencies>
   </autotools>
-
-  <autotools id="gpg" autogen-sh='configure'>
-    <branch repo="gnupg.org" version="2.2.27"
-            module="gcrypt/gnupg/gnupg-2.2.27.tar.bz2"
-            />
-    <dependencies>
-      <dep package="libgpg-error"/>
-      <dep package="libgcrypt"/>
-    </dependencies>
-  </autotools>
   
   <meson id="libsecret" mesonargs="-Dvapi=true -Dgtk_doc=false">
     <branch version="0.20.4"
