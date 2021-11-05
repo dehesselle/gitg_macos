@@ -107,21 +107,17 @@
     </branch>
   </autotools>
 
-  <!-- ImageMagick 6 https://legacy.imagemagick.org -->
+  <!-- ImageMagick https://imagemagick.org -->
   <autotools
     id="imagemagick"
     autogen-sh="configure">
     <branch
-      module="ImageMagick/ImageMagick6/archive/6.9.12-7.tar.gz"
-      version="6.9.12-7"
-      hash="sha256:6abbd6afe7130edba7652a49c03a699657d6a71cf631a3c82014a31c8f93996d"
+      module="ImageMagick/ImageMagick/archive/refs/tags/7.1.0-13.tar.gz"
+      version="7.1.0-13"
+      hash="sha256:7272dbf89734a30b3e1801dffcd6139c771bb9ab5de1abd3ec9efa3798fdfc0c"
       repo="github"
-      checkoutdir="imagemagick-6.9.12-7"
-      rename-tarball="imagemagick-6.9.12-7.tar.gz">
-      <patch
-        file="imagemagick_configure_pango.patch"
-        strip="1">
-      </patch>
+      checkoutdir="ImageMagick-7.1.0-13"
+      rename-tarball="ImageMagick-7.1.0-13.tar.gz">
     </branch>
     <dependencies>
       <dep package="pango"/>
