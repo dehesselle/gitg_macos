@@ -6,7 +6,7 @@
 
 ### description ################################################################
 
-# Build gitg.
+# Build tools required for packaging the app.
 
 ### shellcheck #################################################################
 
@@ -24,6 +24,10 @@ source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
 
 bash_d_include error
 
+#--------------------------------------------------- source additional functions
+
+source "$(dirname "${BASH_SOURCE[0]}")"/src/dmgbuild.sh
+
 ### variables ##################################################################
 
 # Nothing here.
@@ -34,8 +38,16 @@ bash_d_include error
 
 ### main #######################################################################
 
-error_trace_enable
+if $CI; then   # break in CI, otherwise we get interactive prompt by JHBuild
+  error_trace_enable
+fi
 
-#-------------------------------------------------------------------- build Gitg
+#-------------------------------------------- install application bundle creator
 
-jhb buildone gitg
+jhb build gtkmacbundler
+
+#------------------------------------------------------------- create disk image
+
+jhb build imagemagick  # used to create dmg background
+
+dmgbuild_install

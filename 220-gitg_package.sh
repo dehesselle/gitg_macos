@@ -14,14 +14,24 @@
 
 ### dependencies ###############################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
-  source "$script";
-done
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# bash_d is already available (it's part of jhb configuration)
+
+bash_d_include error
+bash_d_include lib
+
+#--------------------------------------------------- source additional functions
+
+source "$(dirname "${BASH_SOURCE[0]}")"/src/gitg.sh
 
 ### variables ##################################################################
 
-# Nothing here.
+SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
 ### functions ##################################################################
 
@@ -63,7 +73,7 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
   "Set CFBundleShortVersionString \"$(gitg_get_version_from_git |
   tr '-' '.' | cut -c 2- | cut -d'.' -f1-4)\"" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleVersion '$VERSION'" "$GITG_PLIST"
+  "Set CFBundleVersion '$BUILD_NUMBER'" "$GITG_PLIST"  # value from CI
 /usr/libexec/PlistBuddy -c \
   "Set LSMinimumSystemVersion '$SYS_SDK_VER'" "$GITG_PLIST"
 

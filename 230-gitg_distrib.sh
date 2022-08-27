@@ -14,14 +14,24 @@
 
 ### dependencies ###############################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
-  source "$script";
-done
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# bash_d is already available (it's part of jhb configuration)
+
+bash_d_include error
+
+#--------------------------------------------------- source additional functions
+
+source "$(dirname "${BASH_SOURCE[0]}")"/src/dmgbuild.sh
+source "$(dirname "${BASH_SOURCE[0]}")"/src/gitg.sh
 
 ### variables ##################################################################
 
-# Nothing here.
+SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
 ### functions ##################################################################
 

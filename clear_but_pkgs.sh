@@ -9,20 +9,27 @@
 # Create our JHBuild-based toolset with all dependencies to be able to
 # compile Inkscape.
 
-### includes ###################################################################
+### shellcheck #################################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
-  source "$script";
-done
+# Nothing here.
 
-### settings ###################################################################
+### dependencies ###############################################################
 
-set -e   # break if one of the called scripts ends in error
+source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
+
+### variables ###################################################################
+
+# Nothing here.
+
+### functions ##################################################################
+
+# Nothing here.
 
 ### main #######################################################################
 
-mv $PKG_DIR $WRK_DIR/$(basename $PKG_DIR)
-rm -rf $VER_DIR
-mkdir -p $(dirname $PKG_DIR)
-mv $WRK_DIR/$(basename $PKG_DIR) $PKG_DIR
+set -e
+
+mv "$PKG_DIR" "$WRK_DIR/$(basename "$PKG_DIR")"
+rm -rf "$VER_DIR"
+mkdir -p "$(dirname "$PKG_DIR")"
+mv "$WRK_DIR/$(basename "$PKG_DIR")" "$PKG_DIR"

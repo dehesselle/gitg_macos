@@ -6,7 +6,7 @@
 
 ### description ################################################################
 
-# Install GTK3 libraries and their dependencies.
+# Build dependencies for Gitg.
 
 ### shellcheck #################################################################
 
@@ -14,10 +14,15 @@
 
 ### dependencies ###############################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
-  source "$script";
-done
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
+
+#------------------------------------------- source common functions from bash_d
+
+# bash_d is already available (it's part of jhb configuration)
+
+bash_d_include error
 
 ### variables ##################################################################
 
@@ -33,6 +38,6 @@ if $CI_GITHUB; then   # break in CI, otherwise we get interactive prompt
   error_trace_enable
 fi
 
-jhbuild build \
-  meta-gtk-osx-bootstrap \
-  meta-gtk-osx-gtk3
+#------------------------------------------------------ dependencies besides GTK
+
+jhb build meta-gitg-dependencies

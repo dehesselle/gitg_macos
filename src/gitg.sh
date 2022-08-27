@@ -37,7 +37,7 @@ GITG_PLIST=$GITG_APP_CON_DIR/Info.plist
 function gitg_get_version
 {
   xmllint --xpath "string(//moduleset/meson[@id='gitg']/branch/@version)" \
-    "$SELF_DIR"/jhbuild/gitg.modules
+    "$SELF_DIR"/modulesets/gitg.modules
 }
 
 function gitg_get_version_from_git

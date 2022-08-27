@@ -6,7 +6,7 @@
 
 ### description ################################################################
 
-# Build dependencies for Gitg.
+# Build GTK3 libraries and their dependencies.
 
 ### shellcheck #################################################################
 
@@ -14,14 +14,13 @@
 
 ### dependencies ###############################################################
 
-# shellcheck disable=SC1090 # can't point to a single source here
-for script in "$(dirname "${BASH_SOURCE[0]}")"/0??-*.sh; do
-  source "$script";
-done
+#------------------------------------------------------ source jhb configuration
+
+source "$(dirname "${BASH_SOURCE[0]}")"/jhb/etc/jhb.conf.sh
 
 ### variables ##################################################################
 
-# Nothing here.
+SELF_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)
 
 ### functions ##################################################################
 
@@ -29,10 +28,15 @@ done
 
 ### main #######################################################################
 
-if $CI_GITHUB; then   # break in CI, otherwise we get interactive prompt
-  error_trace_enable
-fi
+"$SELF_DIR"/jhb/usr/bin/bootstrap
 
-#------------------------------------------------------ dependencies besides GTK
+jhb configure "$SELF_DIR"/modulesets/gitg.modules
 
-jhbuild build meta-gitg-dependencies
+jhb build \
+  libxml2 \
+  pygments \
+  python3
+
+jhb build \
+  meta-gtk-osx-bootstrap \
+  meta-gtk-osx-gtk3
