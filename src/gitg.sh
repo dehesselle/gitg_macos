@@ -17,10 +17,6 @@
 
 ### variables ##################################################################
 
-GITG_REPO_URL=https://gitlab.gnome.org/GNOME/gitg.git
-
-#------------------------------------------- application bundle directory layout
-
 GITG_APP_DIR=$ARTIFACT_DIR/gitg.app
 
 GITG_APP_CON_DIR=$GITG_APP_DIR/Contents
@@ -40,16 +36,16 @@ function gitg_get_version
     "$SELF_DIR"/modulesets/gitg.modules
 }
 
-function gitg_get_version_from_git
+function gitg_get_version_numeric
 {
-  local repo=$TMP/gitg
+  local version
+  version=$(gitg_get_version)
 
-  if [ ! -d "$repo" ]; then
-    git clone $GITG_REPO_URL "$repo" >/dev/null 2>&1
+  if [ "${version:0:1}" = "v" ]; then
+    echo "${version:1}"
+  else
+    echo "$version"
   fi
-
-  git -C "$repo" checkout "$(gitg_get_version)" >/dev/null 2>&1
-  git -C "$repo" describe
 }
 
 ### main #######################################################################

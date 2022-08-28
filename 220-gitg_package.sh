@@ -70,8 +70,7 @@ lib_change_siblings "$GITG_APP_LIB_DIR"
 # No alphanumeric characters allowed, so we turn the version number into
 # major.minor.patch.number_of_commits_since_tag
 /usr/libexec/PlistBuddy -c \
-  "Set CFBundleShortVersionString \"$(gitg_get_version_from_git |
-  tr '-' '.' | cut -c 2- | cut -d'.' -f1-4)\"" "$GITG_PLIST"
+  "Set CFBundleShortVersionString \"$(gitg_get_version)\"" "$GITG_PLIST"
 /usr/libexec/PlistBuddy -c \
   "Set CFBundleVersion '$BUILD_NUMBER'" "$GITG_PLIST"  # value from CI
 /usr/libexec/PlistBuddy -c \
