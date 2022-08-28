@@ -13,7 +13,8 @@
 
 ### dependencies ###############################################################
 
-# Nothing here.
+# shellcheck source=../jhb/usr/src/jhb/jhbuild.sh
+source "$SRC_DIR"/jhb/jhbuild.sh
 
 ### variables ##################################################################
 
@@ -39,10 +40,11 @@ DMGBUILD_CONFIG="$SRC_DIR"/gitg_dmg.py
 function dmgbuild_install
 {
   # shellcheck disable=SC2086 # we need word splitting here
-  jhb run pip3.8 install --ignore-installed --prefix "$USR_DIR" $DMGBUILD_PIP
+  jhb run $JHBUILD_PYTHON_PIP install \
+    --prefix $USR_DIR --ignore-installed $DMGBUILD_PIP
 
   # dmgbuild has issues with detaching, workaround is to increase max retries
-  sed -i '' '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$BIN_DIR"/dmgbuild
+  sed -i '' '$ s/HiDPI)/HiDPI, detach_retries=15)/g' "$USR_DIR"/bin/dmgbuild
 }
 
 function dmgbuild_run
@@ -51,7 +53,7 @@ function dmgbuild_run
 
   # Copy templated version of the file (it contains placeholders) to source
   # directory. They copy will be modified to contain the actual values.
-  cp "$SELF_DIR"/"$(basename "$DMGBUILD_CONFIG")" "$DMGBUILD_CONFIG"
+  cp "$SELF_DIR"/src/"$(basename "$DMGBUILD_CONFIG")" "$SRC_DIR"
 
   # set application
   sed -i '' "s|PLACEHOLDERAPPLICATION|$GITG_APP_DIR|" "$DMGBUILD_CONFIG"
@@ -67,8 +69,7 @@ function dmgbuild_run
   local background
   background=$SRC_DIR/$(basename -s .py "$DMGBUILD_CONFIG").png
   if [ -f "$background" ]; then
-    sed -i '' "s|PLACEHOLDERBACKGROUND|$background|" \
-      "$DMGBUILD_CONFIG"
+    sed -i '' "s|PLACEHOLDERBACKGROUND|$background|" "$DMGBUILD_CONFIG"
   fi
 
   # Create disk image in temporary location and move to target location
