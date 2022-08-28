@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2022 René de Hesselle <dehesselle@web.de>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+variables:
+  GIT_DEPTH: 1
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - build
+
+include:
+  - remote: https://raw.githubusercontent.com/dehesselle/sdkchecksum/master/.gitlab-ci/verify_sdk-template.yml
+
+#------------------------------------------------------------------------- build
+
+build:
+  stage: build
+  parallel:
+    matrix:
+      - RUNNER: [ "macosintel", "macosarm" ]
+  rules:
+    - if: $RUNNER == "macosintel"
+      variables:
+        SDKROOT: /opt/sdks/MacOSX10.11.4.sdk
+    - if: $RUNNER == "macosarm"
+      variables:
+        SDKROOT: /opt/sdks/MacOSX11.3.sdk
+  tags:
+    - ${RUNNER}
+  script:
+    - !reference [ .verify_sdk, script ]
+    - 'curl -X PUT -s -f --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/variables/BUILD_NUMBER -d value=$((BUILD_NUMBER + 1))'
+    - ./build_toolset.sh
+    - ./build_gitg.sh
+  after_script:
+    # For persistent runners: cleanup afterwards.
+    - |
+      source jhb/etc/jhb.conf.sh
+      rm -rf $VER_DIR
+  artifacts:
+    paths:
+      - gitg.dmg
