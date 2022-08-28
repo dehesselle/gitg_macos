@@ -28,6 +28,8 @@ GITG_APP_LIB_DIR=$GITG_APP_RES_DIR/lib
 
 GITG_PLIST=$GITG_APP_CON_DIR/Info.plist
 
+GITG_BUILD_NUMBER=${GITG_BUILD_NUMBER:-0}
+
 ### functions ##################################################################
 
 function gitg_get_version

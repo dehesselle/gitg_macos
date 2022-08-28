@@ -1,0 +1,13 @@
+diff --git a/gitg/gitg-application.vala b/gitg/gitg-application.vala
+index 6294d965..1fc94630 100644
+--- a/gitg/gitg-application.vala
++++ b/gitg/gitg-application.vala
+@@ -236,7 +236,7 @@ public class Application : Gtk.Application
+ 		                      "copyright", copyright,
+ 		                      "comments", comments,
+ 		                      "translator-credits", _("translator-credits"),
+-		                      "version", Config.VERSION,
++		                      "version", Config.VERSION.concat(" BUILD_NUMBER"),
+ 		                      "website", Config.PACKAGE_URL,
+ 		                      "website-label", _("gitg homepage"),
+ 		                      "logo-icon-name", Gitg.Config.APPLICATION_ID,

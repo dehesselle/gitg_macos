@@ -47,8 +47,8 @@ convert -size 460x400 xc:transparent \
   -font Andale-Mono -pointsize 64 -fill black \
   -draw "text 20,60 'Gitg'" \
   -font Andale-Mono -pointsize 30 -fill black \
-  -draw "text 20,120 '$(gitg_get_version_from_git)'" \
-  -draw "text 20,160 '($VERSION)'" \
+  -draw "text 20,120 '$(gitg_get_version)'" \
+  -draw "text 20,160 '($GITG_BUILD_NUMBER)'" \
   "$SRC_DIR"/gitg_dmg.png
 
 dmgbuild_run "$ARTIFACT_DIR"/gitg.dmg

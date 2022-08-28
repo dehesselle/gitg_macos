@@ -25,6 +25,10 @@
         file="gitg_set_bundle_env.patch"
         strip="1">
       </patch>
+      <patch
+        file="gitg-build_number.patch"
+        strip="1">
+      </patch>
     </branch>
     <dependencies>
       <dep package="meta-gitg-dependencies"/>

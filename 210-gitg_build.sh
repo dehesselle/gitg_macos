@@ -38,4 +38,7 @@ error_trace_enable
 
 #-------------------------------------------------------------------- build Gitg
 
+gsed -i "s/BUILD_NUMBER/$GITG_BUILD_NUMBER/g" \
+  "$ETC_DIR"/modulesets/gitg/patches/gitg-build_number.patch
+
 jhb buildone gitg
