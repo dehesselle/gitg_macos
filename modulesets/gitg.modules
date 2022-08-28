@@ -23,15 +23,10 @@
 
   <meson
     id="gitg">
-    <!--
-      We are using master instead gnome-3-32 branch as we're already using
-      gtksourceview4. That gives us a 3.30+ version number though
-      (instead 3.32+).
-    -->
     <branch
-      module="gitg/-/archive/b9f102c7/gitg-b9f102c7.tar.gz"
-      version="b9f102c7"
-      hash="sha256:744beddcd91dd6baf722f958a9a9d6cd6ed799b5dae153d5083c083e1666b7d5"
+      module="gitg/-/archive/v41/gitg-v41.tar.bz2"
+      version="v41"
+      hash="sha256:9b08e2f0042f2017293bf6375cf46067edc261ba8b4909f77b513a0be2f6e815"
       repo="gnome_gitlab">
       <patch
         file="gitg_disable_libgit2_thread_test.patch"
@@ -185,15 +180,16 @@
   <meson
     id="libgit2-glib">
     <branch
-      module="libgit2-glib/0.99/libgit2-glib-0.99.0.1.tar.xz"
-      version="0.99.0.1"
-      hash="sha256:e05a75c444d9c8d5991afc4a5a64cd97d731ce21aeb7c1c651ade1a3b465b9de"
+      module="libgit2-glib/1.1/libgit2-glib-1.1.0.tar.xz"
+      version="1.1.0"
+      hash="sha256:c38dd7575daf8141e1e422333a575faf65f3c9210c08e83e981b88dd41bf1ef3"
       repo="gnome_org">
     </branch>
     <dependencies>
       <dep package="glib"/>
       <dep package="libgit2"/>
       <dep package="gobject-introspection"/>
+      <dep package="pygobject3"/>
     </dependencies>
   </meson>
 
